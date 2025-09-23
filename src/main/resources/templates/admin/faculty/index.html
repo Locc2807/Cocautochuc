@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security6">
+<head th:replace="admin/fragment/head :: head"></head>
+
+<body>
+	<div class="wrapper">
+
+		<!-- Sidebar -->
+		<div th:replace="admin/fragment/aside :: aside"></div>
+		<!-- End Sidebar -->
+
+		<div class="main-panel">
+			<!-- Header -->
+			<div th:replace="admin/fragment/header :: header"></div>
+
+			<div class="container">
+				<div class="page-inner">
+					<div class="page-header">
+						<h4 class="page-title">Danh sách Khoa</h4>
+					</div>
+
+					<div class="page-category">
+						<table class="table table-bordered table-striped">
+							<thead class="table-dark">
+								<tr>
+									<th>ID</th>
+									<th>Tên khoa</th>
+									<th>Trường</th>
+									<th>Đại học</th>
+									<th>Ngày thành lập</th>
+									<th>Văn phòng</th>
+									<th>Điện thoại</th>
+									<th>Email</th>
+									<th>Mô tả</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="faculty : ${faculty}">
+									<td th:text="${faculty.facultyId}"></td>
+									<td th:text="${faculty.facultyName}"></td>
+									<td
+										th:text="${faculty.school != null ? faculty.school.name : 'N/A'}"></td>
+									<td
+										th:text="${faculty.university != null ? faculty.university.name : 'N/A'}"></td>
+									<td
+										th:text="${#dates.format(faculty.establishedDate,'dd/MM/yyyy')}"></td>
+									<td th:text="${faculty.officeLocation}"></td>
+									<td th:text="${faculty.phone}"></td>
+									<td th:text="${faculty.email}"></td>
+									<td th:text="${faculty.description}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<div th:replace="admin/fragment/footer :: footer"></div>
+		</div>
+	</div>
+
+	<!-- Core JS -->
+	<script th:src="@{/assets/js/core/jquery-3.7.1.min.js}"></script>
+	<script th:src="@{/assets/js/core/popper.min.js}"></script>
+	<script th:src="@{/assets/js/core/bootstrap.min.js}"></script>
+
+	<!-- Plugins -->
+	<script
+		th:src="@{/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart.js/chart.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart-circle/circles.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/datatables/datatables.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/jsvectormap.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/world.js}"></script>
+	<script th:src="@{/assets/js/plugin/gmaps/gmaps.js}"></script>
+	<script th:src="@{/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
+	<script th:src="@{/assets/js/kaiadmin.min.js}"></script>
+</body>
+</html>

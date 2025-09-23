@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security6">
+<head th:replace="admin/fragment/head :: head"></head>
+
+<body>
+	<div class="wrapper">
+
+		<!-- Sidebar -->
+		<div th:replace="admin/fragment/aside :: aside"></div>
+		<!-- End Sidebar -->
+
+		<div class="main-panel">
+			<!-- Header -->
+			<div th:replace="admin/fragment/header :: header"></div>
+			<div class="container">
+				<div class="page-inner">
+					<div class="page-header">
+						<h4 class="page-title">Chương trình đào tạo</h4>
+					</div>
+					<div class="page-category">Inner page content goes here</div>
+				</div>
+			</div>
+
+			<!--Footer -->
+			<div th:replace="admin/fragment/footer :: footer"></div>
+		</div>
+	</div>
+	<!--   Core JS Files   -->
+	<script th:src="@{/assets/js/core/jquery-3.7.1.min.js}"></script>
+	<script th:src="@{assets/js/core/popper.min.js}"></script>
+	<script th:src="@{assets/js/core/bootstrap.min.js}"></script>
+
+	<!-- jQuery Scrollbar -->
+	<script
+		th:src="@{assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
+
+	<!-- Chart JS -->
+	<script th:src="@{assets/js/plugin/chart.js/chart.min.js}"></script>
+
+	<!-- jQuery Sparkline -->
+	<script
+		th:src="@{assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
+
+	<!-- Chart Circle -->
+	<script th:src="@{assets/js/plugin/chart-circle/circles.min.js}"></script>
+
+	<!-- Datatables -->
+	<script th:src="@{assets/js/plugin/datatables/datatables.min.js}"></script>
+
+	<!-- Bootstrap Notify -->
+	<script
+		th:src="@{assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
+
+	<!-- jQuery Vector Maps -->
+	<script th:src="@{assets/js/plugin/jsvectormap/jsvectormap.min.js}"></script>
+	<script th:src="@{assets/js/plugin/jsvectormap/world.js}"></script>
+
+	<!-- Google Maps Plugin -->
+	<script th:src="@{assets/js/plugin/gmaps/gmaps.js}"></script>
+
+	<!-- Sweet Alert -->
+	<script th:src="@{assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
+
+	<!-- Kaiadmin JS -->
+	<script th:src="@{assets/js/kaiadmin.min.js}"></script>
+</body>
+</html>
