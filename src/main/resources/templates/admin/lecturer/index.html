@@ -34,7 +34,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="lecturer : ${lecturer}">
+								<tr th:each="lecturer : ${lecturerPage}">
 									<td th:text="${lecturer.lecturerId}"></td>
 									<td th:text="${lecturer.lecturerName}"></td>
 									<td
@@ -47,6 +47,32 @@
 								</tr>
 							</tbody>
 						</table>
+
+						<div class="d-flex justify-content-center mt-3">
+							<ul class="pagination">
+								<!-- Nút Previous -->
+								<li class="page-item"
+									th:classappend="${!lecturerPage.hasPrevious()} ? 'disabled'">
+									<a class="page-link"
+									th:href="@{/admin/lecturer(page=${lecturerPage.number - 1}, size=${lecturerPage.size})}">«</a>
+								</li>
+
+								<!-- Các số trang -->
+								<li class="page-item"
+									th:each="i : ${#numbers.sequence(0, lecturerPage.totalPages - 1)}"
+									th:classappend="${i == lecturerPage.number} ? 'active'"><a
+									class="page-link"
+									th:href="@{/admin/lecturer(page=${i}, size=${lecturerPage.size})}"
+									th:text="${i + 1}"></a></li>
+
+								<!-- Nút Next -->
+								<li class="page-item"
+									th:classappend="${!lecturerPage.hasNext()} ? 'disabled'"><a
+									class="page-link"
+									th:href="@{/admin/lecturer(page=${lecturerPage.number + 1}, size=${lecturerPage.size})}">»</a>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>

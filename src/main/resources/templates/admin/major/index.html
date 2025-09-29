@@ -33,7 +33,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<tr th:each="major : ${major}">
+								<tr th:each="major : ${majorPage.content}">
 									<td th:text="${major.majorId}"></td>
 									<td th:text="${major.majorCode}"></td>
 									<td th:text="${major.majorName}"></td>
@@ -45,6 +45,32 @@
 								</tr>
 							</tbody>
 						</table>
+
+						<div class="d-flex justify-content-center mt-3">
+							<ul class="pagination">
+								<!-- Nút Previous -->
+								<li class="page-item"
+									th:classappend="${!majorPage.hasPrevious()} ? 'disabled'">
+									<a class="page-link"
+									th:href="@{/admin/major(page=${majorPage.number - 1}, size=${majorPage.size})}">«</a>
+								</li>
+
+								<!-- Các số trang -->
+								<li class="page-item"
+									th:each="i : ${#numbers.sequence(0, majorPage.totalPages - 1)}"
+									th:classappend="${i == majorPage.number} ? 'active'"><a
+									class="page-link"
+									th:href="@{/admin/major(page=${i}, size=${majorPage.size})}"
+									th:text="${i + 1}"></a></li>
+
+								<!-- Nút Next -->
+								<li class="page-item"
+									th:classappend="${!majorPage.hasNext()} ? 'disabled'"><a
+									class="page-link"
+									th:href="@{/admin/major(page=${majorPage.number + 1}, size=${majorPage.size})}">»</a>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>
