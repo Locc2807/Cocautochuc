@@ -26,7 +26,6 @@
 								<tr>
 									<th>ID</th>
 									<th>Tên giảng viên</th>
-									<th>Khoa</th>
 									<th>Trường</th>
 									<th>Chức vụ</th>
 									<th>Email</th>
@@ -37,8 +36,6 @@
 								<tr th:each="lecturer : ${lecturerPage}">
 									<td th:text="${lecturer.lecturerId}"></td>
 									<td th:text="${lecturer.lecturerName}"></td>
-									<td
-										th:text="${lecturer.faculty != null ? lecturer.faculty.name : 'N/A'}"></td>
 									<td
 										th:text="${lecturer.school != null ? lecturer.school.name : 'N/A'}"></td>
 									<td th:text="${lecturer.position}"></td>

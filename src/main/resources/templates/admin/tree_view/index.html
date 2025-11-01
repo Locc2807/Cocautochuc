@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security6">
+<head> 
+<th:block th:replace="admin/fragment/head :: head"></th:block>
+<style>
+.tree {
+	list-style-type: none;
+	padding-left: 20px;
+}
+
+ul, li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.tree-node {
+	cursor: pointer;
+	display: inline-block;
+	padding: 4px 8px;
+}
+
+.nested {
+	display: none;
+	margin-left: 20px;
+}
+
+.nested.active {
+	display: block;
+}
+
+.tree-node.toggle::before {
+	content: "▶ ";
+	font-size: 12px;
+	transition: transform 0.2s;
+}
+
+.tree-node.toggle.open::before {
+	content: "▼ ";
+}
+</style>
+
+</head>
+
+<body>
+	<div class="wrapper">
+
+		<!-- Sidebar -->
+		<div th:replace="admin/fragment/aside :: aside"></div>
+		<!-- End Sidebar -->
+
+		<div class="main-panel">
+			<div th:replace="admin/fragment/header :: header"></div>
+
+			<div class="container">
+				<div class="page-inner">
+					<div class="page-header">
+						<h4 class="page-title text-primary fw-bold">Cấu trúc Đại học</h4>
+					</div>
+
+					<div class="card shadow-sm p-4">
+						<ul class="tree">
+							<li th:each="u : ${universities}"><span
+								class="tree-node root toggle" th:text="${u.name}"></span>
+								<ul class="nested">
+									<li th:each="s : ${u.schools}"><span
+										class="tree-node school toggle" th:text="${s.name}"></span>
+										<ul class="nested">
+											<li th:each="f : ${s.faculties}"><span
+												class="tree-node faculty toggle" th:text="${f.facultyName}"></span>
+												<ul class="nested">
+													<li th:each="m : ${f.majors}"><span
+														class="tree-node major" th:text="${m.majorName}"></span></li>
+												</ul></li>
+										</ul></li>
+								</ul></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div th:replace="admin/fragment/footer :: footer"></div>
+		</div>
+	</div>
+
+	<!-- Core JS -->
+	<script th:src="@{/assets/js/core/jquery-3.7.1.min.js}"></script>
+	<script th:src="@{/assets/js/core/popper.min.js}"></script>
+	<script th:src="@{/assets/js/core/bootstrap.min.js}"></script>
+
+	<!-- Plugins -->
+	<script
+		th:src="@{/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart.js/chart.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart-circle/circles.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/datatables/datatables.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/jsvectormap.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/world.js}"></script>
+	<script th:src="@{/assets/js/plugin/gmaps/gmaps.js}"></script>
+	<script th:src="@{/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
+	<script th:src="@{/assets/js/kaiadmin.min.js}"></script>
+
+	<script>
+		$(document).ready(function() {
+			$('.toggle').on('click', function(e) {
+				e.stopPropagation();
+				$(this).toggleClass('open');
+				$(this).siblings('.nested').toggleClass('active');
+			});
+		});
+	</script>
+
+</body>
+</html>

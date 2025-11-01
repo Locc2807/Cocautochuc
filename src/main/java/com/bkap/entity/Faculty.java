@@ -1,6 +1,7 @@
 package com.bkap.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -17,8 +19,8 @@ import jakarta.persistence.ForeignKey;
 @Entity
 @Table(name = "FACULTY")
 public class Faculty {
-	
-	@Id
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "faculty_id")
     private Long facultyId;
@@ -27,12 +29,8 @@ public class Faculty {
     private String facultyName;
 
     @ManyToOne
-    @JoinColumn(name = "school_id", foreignKey = @ForeignKey(name = "fk_faculty_school"))
+    @JoinColumn(name = "school_id", nullable = false, foreignKey = @ForeignKey(name = "fk_faculty_school"))
     private School school;
-
-    @ManyToOne
-    @JoinColumn(name = "university_id", foreignKey = @ForeignKey(name = "fk_faculty_university"))
-    private University university;
 
     @Column(name = "established_date")
     @Temporal(TemporalType.DATE)
@@ -50,10 +48,11 @@ public class Faculty {
     @Column(name = "description", length = 300)
     private String description;
 
-    // Constructors
+    @OneToMany(mappedBy = "faculty")
+    private List<Major> majors;
+
     public Faculty() {}
 
-    // Getters and Setters
     public Long getFacultyId() {
         return facultyId;
     }
@@ -76,14 +75,6 @@ public class Faculty {
 
     public void setSchool(School school) {
         this.school = school;
-    }
-
-    public University getUniversity() {
-        return university;
-    }
-
-    public void setUniversity(University university) {
-        this.university = university;
     }
 
     public Date getEstablishedDate() {
@@ -124,5 +115,13 @@ public class Faculty {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Major> getMajors() {
+        return majors;
+    }
+
+    public void setMajors(List<Major> majors) {
+        this.majors = majors;
     }
 }

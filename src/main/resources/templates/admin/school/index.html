@@ -1,106 +1,179 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="https://www.thymeleaf.org/extras/spring-security6">
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security6">
 <head th:replace="admin/fragment/head :: head"></head>
 
 <body>
-	<div class="wrapper">
+<div class="wrapper">
 
-		<!-- Sidebar -->
-		<div th:replace="admin/fragment/aside :: aside"></div>
-		<!-- End Sidebar -->
+    <!-- Sidebar -->
+    <div th:replace="admin/fragment/aside :: aside"></div>
+    <!-- End Sidebar -->
 
-		<div class="main-panel">
-			<!-- Header -->
-			<div th:replace="admin/fragment/header :: header"></div>
+    <div class="main-panel">
+        <!-- Header -->
+        <div th:replace="admin/fragment/header :: header"></div>
 
-			<div class="container">
-				<div class="page-inner">
-					<div class="page-header">
-						<h4 class="page-title">Danh sách Trường</h4>
-					</div>
+        <div class="container">
+            <div class="page-inner">
+                <div class="page-header">
+                    <h4 class="page-title">Danh sách Trường</h4>
+                </div>
 
-					<div class="page-category">
-						<table class="table table-bordered table-striped">
-							<thead class="table-dark">
-								<tr>
-									<th>ID</th>
-									<th>Tên trường</th>
-									<th>Đại học</th>
-									<th>Địa chỉ</th>
-									<th>Điện thoại</th>
-									<th>Email</th>
-									<th>Website</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr th:each="school : ${schoolPage}">
-									<td th:text="${school.id}"></td>
-									<td th:text="${school.name}"></td>
-									<td
-										th:text="${school.university != null ? school.university.name : 'N/A'}"></td>
-									<td th:text="${school.address}"></td>
-									<td th:text="${school.phone}"></td>
-									<td th:text="${school.email}"></td>
-									<td><a th:href="${school.website}" target="_blank"
-										th:text="${school.website}"></a></td>
-								</tr>
-							</tbody>
-						</table>
+                <!-- Form tìm kiếm và lọc -->
+                <form class="row mb-3" th:action="@{/admin/school}" method="get">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" name="keyword"
+                               placeholder="Tìm kiếm theo trường" th:value="${keyword}">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="schoolId">
+                            <option th:each="schoolItem : ${schools}"
+                                    th:value="${schoolItem.id}" th:text="${schoolItem.name}"
+                                    th:selected="${schoolItem.id == schoolId}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary">Tìm</button>
+                    </div>
+                </form>
 
-						<div class="d-flex justify-content-center mt-3">
-							<ul class="pagination">
-								<!-- Nút Previous -->
-								<li class="page-item"
-									th:classappend="${!schoolPage.hasPrevious()} ? 'disabled'">
-									<a class="page-link"
-									th:href="@{/admin/school(page=${schoolPage.number - 1}, size=${schoolPage.size})}">«</a>
-								</li>
+                <!-- Nút chỉnh sửa / thêm mới / lưu / hủy -->
+                <div class="mb-3 d-flex justify-content-end align-items-center gap-2">
+                    <button type="button" id="btnAddNew" class="btn btn-success d-none" style="margin-right:600px;">
+                        <i class="fa fa-plus"></i> Thêm mới
+                    </button>
+                    <button type="button" id="btnEditToggle" class="btn btn-warning">
+                        <i class="fa fa-pen"></i> Chỉnh sửa
+                    </button>
+                    <button type="button" id="btnSaveChanges" class="btn btn-success d-none">
+                        <i class="fa fa-save"></i> Lưu thay đổi
+                    </button>
+                    <button type="button" id="btnCancelEdit" class="btn btn-secondary d-none">
+                        <i class="fa fa-times"></i> Hủy chỉnh sửa
+                    </button>
+                </div>
 
-								<!-- Các số trang -->
-								<li class="page-item"
-									th:each="i : ${#numbers.sequence(0, schoolPage.totalPages - 1)}"
-									th:classappend="${i == schoolPage.number} ? 'active'"><a
-									class="page-link"
-									th:href="@{/admin/school(page=${i}, size=${schoolPage.size})}"
-									th:text="${i + 1}"></a></li>
+                <div class="page-category">
+                    <table class="table table-bordered table-striped">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên trường</th>
+                            <th>Đại học</th>
+                            <th>Địa chỉ</th>
+                            <th>Điện thoại</th>
+                            <th>Email</th>
+                            <th class="edit-column d-none">Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="school : ${schoolPage}">
+                            <td th:text="${school.id}"></td>
+                            <td th:text="${school.name}"></td>
+                            <td th:text="${school.university != null ? school.university.name : 'N/A'}"></td>
+                            <td th:text="${school.address}"></td>
+                            <td th:text="${school.phone}"></td>
+                            <td th:text="${school.email}"></td>
+                            <td class="edit-column d-none">
+                                <button class="btn btn-sm btn-primary me-1" title="Sửa">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" title="Xóa">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
-								<!-- Nút Next -->
-								<li class="page-item"
-									th:classappend="${!schoolPage.hasNext()} ? 'disabled'"><a
-									class="page-link"
-									th:href="@{/admin/school(page=${schoolPage.number + 1}, size=${schoolPage.size})}">»</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
+                    <div class="d-flex justify-content-center mt-3">
+                        <ul class="pagination">
+                            <!-- Nút Previous -->
+                            <li class="page-item" th:classappend="${!schoolPage.hasPrevious()} ? 'disabled'">
+                                <a class="page-link"
+                                   th:href="@{/admin/school(page=${schoolPage.number - 1}, size=${schoolPage.size}, keyword=${keyword}, schoolId=${schoolId})}">«</a>
+                            </li>
 
-			<!-- Footer -->
-			<div th:replace="admin/fragment/footer :: footer"></div>
-		</div>
-	</div>
+                            <!-- Các số trang -->
+                            <li class="page-item"
+                                th:each="i : ${#numbers.sequence(0, schoolPage.totalPages - 1)}"
+                                th:classappend="${i == schoolPage.number} ? 'active'"><a
+                                    class="page-link"
+                                    th:href="@{/admin/school(page=${i}, size=${schoolPage.size}, keyword=${keyword}, schoolId=${schoolId})}"
+                                    th:text="${i + 1}"></a></li>
 
-	<!-- Core JS -->
-	<script th:src="@{/assets/js/core/jquery-3.7.1.min.js}"></script>
-	<script th:src="@{/assets/js/core/popper.min.js}"></script>
-	<script th:src="@{/assets/js/core/bootstrap.min.js}"></script>
+                            <!-- Nút Next -->
+                            <li class="page-item" th:classappend="${!schoolPage.hasNext()} ? 'disabled'"><a
+                                    class="page-link"
+                                    th:href="@{/admin/school(page=${schoolPage.number + 1}, size=${schoolPage.size}, keyword=${keyword}, schoolId=${schoolId})}">»</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-	<!-- Plugins -->
-	<script
-		th:src="@{/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
-	<script th:src="@{/assets/js/plugin/chart.js/chart.min.js}"></script>
-	<script
-		th:src="@{/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
-	<script th:src="@{/assets/js/plugin/chart-circle/circles.min.js}"></script>
-	<script th:src="@{/assets/js/plugin/datatables/datatables.min.js}"></script>
-	<script
-		th:src="@{/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
-	<script th:src="@{/assets/js/plugin/jsvectormap/jsvectormap.min.js}"></script>
-	<script th:src="@{/assets/js/plugin/jsvectormap/world.js}"></script>
-	<script th:src="@{/assets/js/plugin/gmaps/gmaps.js}"></script>
-	<script th:src="@{/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
-	<script th:src="@{/assets/js/kaiadmin.min.js}"></script>
+        <!-- Footer -->
+        <div th:replace="admin/fragment/footer :: footer"></div>
+    </div>
+</div>
+
+<!-- Core JS -->
+<script th:src="@{/assets/js/core/jquery-3.7.1.min.js}"></script>
+<script th:src="@{/assets/js/core/popper.min.js}"></script>
+<script th:src="@{/assets/js/core/bootstrap.min.js}"></script>
+
+<!-- Plugins -->
+<script th:src="@{/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
+<script th:src="@{/assets/js/plugin/chart.js/chart.min.js}"></script>
+<script th:src="@{/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
+<script th:src="@{/assets/js/plugin/chart-circle/circles.min.js}"></script>
+<script th:src="@{/assets/js/plugin/datatables/datatables.min.js}"></script>
+<script th:src="@{/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
+<script th:src="@{/assets/js/plugin/jsvectormap/jsvectormap.min.js}"></script>
+<script th:src="@{/assets/js/plugin/jsvectormap/world.js}"></script>
+<script th:src="@{/assets/js/plugin/gmaps/gmaps.js}"></script>
+<script th:src="@{/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
+<script th:src="@{/assets/js/kaiadmin.min.js}"></script>
+
+<!-- Script toggle chế độ chỉnh sửa -->
+<script>
+    const btnEditToggle = document.getElementById('btnEditToggle');
+    const btnSave = document.getElementById('btnSaveChanges');
+    const btnCancel = document.getElementById('btnCancelEdit');
+    const btnAddNew = document.getElementById('btnAddNew');
+    const editColumns = document.querySelectorAll('.edit-column');
+
+    btnEditToggle.addEventListener('click', () => {
+        editColumns.forEach(col => col.classList.remove('d-none'));
+        btnAddNew.classList.remove('d-none');
+        btnEditToggle.classList.add('d-none');
+        btnSave.classList.remove('d-none');
+        btnCancel.classList.remove('d-none');
+    });
+
+    btnCancel.addEventListener('click', () => {
+        editColumns.forEach(col => col.classList.add('d-none'));
+        btnAddNew.classList.add('d-none');
+        btnEditToggle.classList.remove('d-none');
+        btnSave.classList.add('d-none');
+        btnCancel.classList.add('d-none');
+    });
+
+    btnSave.addEventListener('click', () => {
+        alert('Lưu thay đổi thành công!');
+        editColumns.forEach(col => col.classList.add('d-none'));
+        btnAddNew.classList.add('d-none');
+        btnEditToggle.classList.remove('d-none');
+        btnSave.classList.add('d-none');
+        btnCancel.classList.add('d-none');
+    });
+
+    btnAddNew.addEventListener('click', () => {
+        alert('Mở form thêm mới!');
+        // TODO: thêm logic mở modal hoặc form thêm mới
+    });
+</script>
 </body>
 </html>

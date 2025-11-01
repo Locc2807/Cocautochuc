@@ -1,6 +1,7 @@
 package com.bkap.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -48,13 +50,16 @@ public class School {
 
 	@Column(name = "description", length = 300)
 	private String description;
+	
+	@OneToMany(mappedBy = "school")
+	private List<Faculty> faculties;
 
 	public School() {
 
 	}
 
 	public School(Long id, String name, University university, Date establishedDate, String address, String phone,
-			String email, String website, String description) {
+			String email, String website, String description, List<Faculty> faculties) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -65,6 +70,7 @@ public class School {
 		this.email = email;
 		this.website = website;
 		this.description = description;
+		this.faculties = faculties;
 	}
 
 	public Long getId() {
@@ -138,5 +144,14 @@ public class School {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+	public List<Faculty> getFaculties() {
+		return faculties;
+	}
+
+	public void setFaculties(List<Faculty> faculties) {
+		this.faculties = faculties;
+	}
+
 
 }
