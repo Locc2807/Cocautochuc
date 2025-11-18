@@ -20,6 +20,45 @@
 						<h4 class="page-title">Danh sách Khoa</h4>
 					</div>
 
+					<!-- Form tìm kiếm và lọc -->
+					<form class="row mb-3" th:action="@{/admin/faculty}" method="get">
+						<div class="col-md-4">
+							<input type="text" class="form-control" name="keyword"
+								placeholder="Tìm kiếm theo khoa" th:value="${keyword}">
+						</div>
+						<div class="col-md-3">
+							<select class="form-select" name="facultylId">
+								<option th:each="facultyItem : ${faculties}"
+									th:value="${facultyItem.facultyId}"
+									th:text="${facultyItem.facultyName}"
+									th:selected="${facultyItem.facultyId == facultyId}"></option>
+							</select>
+						</div>
+						<div class="col-md-2">
+							<button type="submit" class="btn btn-primary">Tìm</button>
+						</div>
+					</form>
+
+					<!-- Nút chỉnh sửa / thêm mới / lưu / hủy -->
+					<div
+						class="mb-3 d-flex justify-content-end align-items-center gap-2">
+						<button type="button" id="btnAddNew"
+							class="btn btn-success d-none" style="margin-right: 600px;">
+							<i class="fa fa-plus"></i> Thêm mới
+						</button>
+						<button type="button" id="btnEditToggle" class="btn btn-warning">
+							<i class="fa fa-pen"></i> Chỉnh sửa
+						</button>
+						<button type="button" id="btnSaveChanges"
+							class="btn btn-success d-none">
+							<i class="fa fa-save"></i> Lưu thay đổi
+						</button>
+						<button type="button" id="btnCancelEdit"
+							class="btn btn-secondary d-none">
+							<i class="fa fa-times"></i> Hủy chỉnh sửa
+						</button>
+					</div>
+
 					<div class="page-category">
 						<table class="table table-bordered table-striped">
 							<thead class="table-dark">
@@ -29,10 +68,10 @@
 									<th>Trường</th>
 									<th>Đại học</th>
 									<th>Ngày thành lập</th>
-									<th>Văn phòng</th>
 									<th>Điện thoại</th>
 									<th>Email</th>
 									<th>Mô tả</th>
+									<th class="edit-column d-none">Thao tác</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -42,13 +81,22 @@
 									<td
 										th:text="${faculty.school != null ? faculty.school.name : 'N/A'}"></td>
 									<td
-										th:text="${faculty.university != null ? faculty.university.name : 'N/A'}"></td>
+										th:text="${faculty.school != null && faculty.school.university != null ? faculty.school.university.name : 'N/A'}"></td>
 									<td
 										th:text="${#dates.format(faculty.establishedDate,'dd/MM/yyyy')}"></td>
-									<td th:text="${faculty.officeLocation}"></td>
 									<td th:text="${faculty.phone}"></td>
 									<td th:text="${faculty.email}"></td>
 									<td th:text="${faculty.description}"></td>
+									<td class="edit-column d-none">
+										<button class="btn btn-sm btn-primary me-1 btn-edit"
+											title="Sửa" th:data-id="${faculty.facultyId}">
+											<i class="fa fa-edit"></i>
+										</button>
+										<button class="btn btn-sm btn-danger btn-delete" title="Xóa"
+											th:data-id="${faculty.facultyId}">
+											<i class="fa fa-trash"></i>
+										</button>
+									</td>
 								</tr>
 							</tbody>
 						</table>
@@ -107,5 +155,229 @@
 	<script th:src="@{/assets/js/plugin/gmaps/gmaps.js}"></script>
 	<script th:src="@{/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
 	<script th:src="@{/assets/js/kaiadmin.min.js}"></script>
+	
+	<script>
+	const btnEditToggle = document.getElementById('btnEditToggle');
+	const btnSave = document.getElementById('btnSaveChanges');
+	const btnCancel = document.getElementById('btnCancelEdit');
+	const btnAddNew = document.getElementById('btnAddNew');
+	const editColumns = document.querySelectorAll('.edit-column');
+
+	btnEditToggle.addEventListener('click', () => {
+	    editColumns.forEach(col => col.classList.remove('d-none'));
+	    btnAddNew.classList.remove('d-none');
+	    btnEditToggle.classList.add('d-none');
+	    btnSave.classList.remove('d-none');
+	    btnCancel.classList.remove('d-none');
+	});
+
+	btnCancel.addEventListener('click', () => {
+	    editColumns.forEach(col => col.classList.add('d-none'));
+	    btnAddNew.classList.add('d-none');
+	    btnEditToggle.classList.remove('d-none');
+	    btnSave.classList.add('d-none');
+	    btnCancel.classList.add('d-none');
+	});
+
+	btnSave.addEventListener('click', () => {
+	    alert('Lưu thay đổi thành công!');
+	    editColumns.forEach(col => col.classList.add('d-none'));
+	    btnAddNew.classList.add('d-none');
+	    btnEditToggle.classList.remove('d-none');
+	    btnSave.classList.add('d-none');
+	    btnCancel.classList.add('d-none');
+	});
+
+	//Thêm mới
+	btnAddNew.addEventListener('click', () => {
+    document.getElementById('modalTitle').innerText = "Thêm Khoa Mới";
+    document.getElementById('btnSaveModal').setAttribute('onclick', 'saveNewFaculty()');
+
+    // Reset form
+    document.getElementById('facultyName').value = '';
+    document.getElementById('facultySchoolId').value = '';
+    document.getElementById('facultyDate').value = '';
+    document.getElementById('facultyPhone').value = '';
+    document.getElementById('facultyEmail').value = '';
+    document.getElementById('facultyDescription').value = '';
+
+    new bootstrap.Modal(document.getElementById('addFacultyModal')).show();
+});
+
+function saveNewFaculty() {
+    const faculty = {
+        facultyName: document.getElementById('facultyName').value,
+        schoolId: parseInt(document.getElementById('facultySchoolId').value),
+        establishedDate: document.getElementById('facultyDate').value,
+        phone: document.getElementById('facultyPhone').value,
+        email: document.getElementById('facultyEmail').value,
+        description: document.getElementById('facultyDescription').value
+    };
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    fetch('/api/faculties', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken
+        },
+        body: JSON.stringify(faculty)
+    })
+    .then(res => {
+        if(res.ok) {
+            alert("Thêm Khoa thành công!");
+            location.reload();
+        } else {
+            res.text().then(txt => alert("Thêm thất bại: " + txt));
+        }
+    })
+    .catch(err => console.error(err));
+}
+
+//Chỉnh sửa
+document.addEventListener('click', async function(e){
+    const btn = e.target.closest('.btn-edit');
+    if(!btn) return;
+
+    const id = btn.getAttribute('data-id');
+    try {
+        const res = await fetch(`/api/faculties/${id}`);
+        if(!res.ok) throw new Error('Không lấy được dữ liệu!');
+        const data = await res.json();
+
+        document.getElementById('facultyName').value = data.facultyName;
+        document.getElementById('facultySchoolId').value = data.school?.id || '';
+        document.getElementById('facultyDate').value = data.establishedDate || '';
+        document.getElementById('facultyPhone').value = data.phone;
+        document.getElementById('facultyEmail').value = data.email;
+        document.getElementById('facultyDescription').value = data.description;
+
+        document.getElementById('modalTitle').innerText = "Chỉnh sửa Khoa";
+        document.getElementById('btnSaveModal').setAttribute('onclick', `updateFaculty(${id})`);
+
+        new bootstrap.Modal(document.getElementById('addFacultyModal')).show();
+    } catch(err) {
+        console.error(err);
+        alert("Lỗi khi tải dữ liệu!");
+    }
+});
+
+function updateFaculty(id) {
+    const faculty = {
+        facultyName: document.getElementById('facultyName').value,
+        schoolId: parseInt(document.getElementById('facultySchoolId').value),
+        establishedDate: document.getElementById('facultyDate').value,
+        phone: document.getElementById('facultyPhone').value,
+        email: document.getElementById('facultyEmail').value,
+        description: document.getElementById('facultyDescription').value
+    };
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    fetch(`/api/faculties/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken
+        },
+        body: JSON.stringify(faculty)
+    })
+    .then(res => {
+        if(res.ok) {
+            alert("Cập nhật thành công!");
+            location.reload();
+        } else {
+            res.text().then(txt => alert("Cập nhật thất bại: " + txt));
+        }
+    })
+    .catch(err => console.error(err));
+}
+
+//Xóa
+document.addEventListener('click', function(e){
+    const btnDelete = e.target.closest('.btn-delete');
+    if(!btnDelete) return;
+
+    const id = btnDelete.getAttribute('data-id');
+    if(!confirm("Bạn có chắc chắn muốn xóa khoa này?")) return;
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    fetch(`/api/faculties/${id}`, {
+        method: 'DELETE',
+        headers: { [csrfHeader]: csrfToken }
+    })
+    .then(res => {
+        if(res.ok) {
+            alert("Xóa thành công!");
+            location.reload();
+        } else {
+            res.text().then(txt => alert("Xóa thất bại: " + txt));
+        }
+    })
+    .catch(err => console.error(err));
+});
+
+
+	</script>
+
+	<div class="modal fade" id="addFacultyModal" tabindex="-1"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalTitle">Thêm Khoa Mới</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<form id="formAddFaculty">
+						<div class="mb-3">
+							<label class="form-label">Tên khoa</label> <input type="text"
+								class="form-control" id="facultyName" required>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Trường</label> <select
+								class="form-select" id="facultySchoolId" required>
+								<option value="" disabled selected>-- Chọn Trường --</option>
+								<option th:each="s : ${schools}" th:value="${s.id}"
+									th:text="${s.name}"></option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Ngày thành lập</label> <input
+								type="date" class="form-control" id="facultyDate">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Văn phòng</label> <input type="text"
+								class="form-control" id="facultyOffice">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Điện thoại</label> <input type="text"
+								class="form-control" id="facultyPhone">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Email</label> <input type="email"
+								class="form-control" id="facultyEmail">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Mô tả</label>
+							<textarea class="form-control" id="facultyDescription"></textarea>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">Đóng</button>
+					<button type="button" class="btn btn-success" id="btnSaveModal"
+						onclick="saveNewFaculty()">Lưu</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </body>
 </html>

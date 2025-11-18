@@ -1,6 +1,7 @@
 package com.bkap.servies;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,4 +17,8 @@ public interface SchoolServices {
 	
 	Page<School> findByIdPaged(Long id, Pageable pageable);
     List<School> findAllNoPaging();
+    
+    School save(School school);
+    void delete(Long id);
+    Optional<School> findById(Long id); 
 }

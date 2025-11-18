@@ -52,6 +52,7 @@ public class School {
 	private String description;
 	
 	@OneToMany(mappedBy = "school")
+	@com.fasterxml.jackson.annotation.JsonIgnore
 	private List<Faculty> faculties;
 
 	public School() {

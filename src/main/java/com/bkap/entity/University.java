@@ -47,6 +47,7 @@ public class University {
     private String description;
 
     @OneToMany(mappedBy = "university", cascade = CascadeType.ALL, orphanRemoval = true)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<School> schools;
 
     // Getters and Setters

@@ -20,6 +20,45 @@
 						<h4 class="page-title">Danh sách Ngành</h4>
 					</div>
 
+					<!-- Form tìm kiếm và lọc -->
+					<form class="row mb-3" th:action="@{/admin/major}" method="get">
+						<div class="col-md-4">
+							<input type="text" class="form-control" name="keyword"
+								placeholder="Tìm kiếm theo ngành" th:value="${keyword}">
+						</div>
+						<div class="col-md-3">
+							<select class="form-select" name="majorId">
+								<option th:each="majorItem : ${majors}"
+									th:value="${majorItem.majorId}"
+									th:text="${majorItem.majorName}"
+									th:selected="${majorItem.majorId == majorId}"></option>
+							</select>
+						</div>
+						<div class="col-md-2">
+							<button type="submit" class="btn btn-primary">Tìm</button>
+						</div>
+					</form>
+
+					<!-- Nút chỉnh sửa / thêm mới / lưu / hủy -->
+					<div
+						class="mb-3 d-flex justify-content-end align-items-center gap-2">
+						<button type="button" id="btnAddNew"
+							class="btn btn-success d-none" style="margin-right: 600px;">
+							<i class="fa fa-plus"></i> Thêm mới
+						</button>
+						<button type="button" id="btnEditToggle" class="btn btn-warning">
+							<i class="fa fa-pen"></i> Chỉnh sửa
+						</button>
+						<button type="button" id="btnSaveChanges"
+							class="btn btn-success d-none">
+							<i class="fa fa-save"></i> Lưu thay đổi
+						</button>
+						<button type="button" id="btnCancelEdit"
+							class="btn btn-secondary d-none">
+							<i class="fa fa-times"></i> Hủy chỉnh sửa
+						</button>
+					</div>
+
 					<div class="page-category">
 						<table class="table table-bordered table-striped">
 							<thead class="table-dark">
@@ -30,6 +69,7 @@
 									<th>Khoa</th>
 									<th>Ngày thành lập</th>
 									<th>Mô tả</th>
+									<th class="edit-column d-none">Thao tác</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -42,6 +82,16 @@
 									<td
 										th:text="${#dates.format(major.establishedDate,'dd/MM/yyyy')}"></td>
 									<td th:text="${major.description}"></td>
+									<td class="edit-column d-none">
+										<button class="btn btn-sm btn-primary me-1 btn-edit"
+											title="Sửa" th:data-id="${major.majorId}">
+											<i class="fa fa-edit"></i>
+										</button>
+										<button class="btn btn-sm btn-danger btn-delete" title="Xóa"
+											th:data-id="${major.majorId}">
+											<i class="fa fa-trash"></i>
+										</button>
+									</td>
 								</tr>
 							</tbody>
 						</table>
@@ -100,5 +150,217 @@
 	<script th:src="@{/assets/js/plugin/gmaps/gmaps.js}"></script>
 	<script th:src="@{/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
 	<script th:src="@{/assets/js/kaiadmin.min.js}"></script>
+
+	<script>
+/* ================== Toggle Chỉnh sửa ================== */
+const btnEditToggle = document.getElementById('btnEditToggle');
+const btnSave = document.getElementById('btnSaveChanges');
+const btnCancel = document.getElementById('btnCancelEdit');
+const btnAddNew = document.getElementById('btnAddNew');
+const editColumns = document.querySelectorAll('.edit-column');
+
+btnEditToggle.addEventListener('click', () => {
+    editColumns.forEach(col => col.classList.remove('d-none'));
+    btnAddNew.classList.remove('d-none');
+    btnEditToggle.classList.add('d-none');
+    btnSave.classList.remove('d-none');
+    btnCancel.classList.remove('d-none');
+});
+
+btnCancel.addEventListener('click', () => {
+    editColumns.forEach(col => col.classList.add('d-none'));
+    btnAddNew.classList.add('d-none');
+    btnEditToggle.classList.remove('d-none');
+    btnSave.classList.add('d-none');
+    btnCancel.classList.add('d-none');
+});
+
+btnSave.addEventListener('click', () => {
+    alert('Lưu thay đổi thành công!');
+    editColumns.forEach(col => col.classList.add('d-none'));
+    btnAddNew.classList.add('d-none');
+    btnEditToggle.classList.remove('d-none');
+    btnSave.classList.add('d-none');
+    btnCancel.classList.add('d-none');
+});
+
+/* ================== Thêm mới Major ================== */
+btnAddNew.addEventListener('click', () => {
+    document.getElementById('modalTitle').innerText = "Thêm Ngành Mới";
+    document.getElementById('btnSaveModal').setAttribute('onclick', 'saveNewMajor()');
+
+    // Reset form
+    document.getElementById('majorName').value = '';
+    document.getElementById('majorCode').value = '';
+    document.getElementById('majorFacultyId').value = '';
+    document.getElementById('majorDate').value = '';
+    document.getElementById('majorDescription').value = '';
+
+    new bootstrap.Modal(document.getElementById('addMajorModal')).show();
+});
+
+function saveNewMajor() {
+    const major = {
+        majorName: document.getElementById('majorName').value,
+        majorCode: document.getElementById('majorCode').value,
+        facultyId: parseInt(document.getElementById('majorFacultyId').value),
+        establishedDate: document.getElementById('majorDate').value,
+        description: document.getElementById('majorDescription').value
+    };
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    fetch('/api/majors', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken
+        },
+        body: JSON.stringify(major)
+    })
+    .then(res => {
+        if (res.ok) {
+            alert("Thêm ngành thành công!");
+            location.reload();
+        } else {
+            res.text().then(txt => alert("Thêm thất bại: " + txt));
+        }
+    })
+    .catch(err => console.error(err));
+}
+
+/* ================== Chỉnh sửa Major ================== */
+document.addEventListener('click', async function(e) {
+    const btn = e.target.closest('.btn-edit');
+    if (!btn) return;
+
+    const id = btn.getAttribute('data-id');
+    try {
+        const res = await fetch(`/api/majors/${id}`);
+        if (!res.ok) throw new Error('Không lấy được dữ liệu!');
+        const data = await res.json();
+
+        document.getElementById('majorName').value = data.majorName;
+        document.getElementById('majorCode').value = data.majorCode;
+        document.getElementById('majorFacultyId').value = data.faculty?.facultyId || '';
+        document.getElementById('majorDate').value = data.establishedDate || '';
+        document.getElementById('majorDescription').value = data.description;
+
+        document.getElementById('modalTitle').innerText = "Chỉnh sửa Ngành";
+        document.getElementById('btnSaveModal').setAttribute('onclick', `updateMajor(${id})`);
+
+        new bootstrap.Modal(document.getElementById('addMajorModal')).show();
+    } catch (err) {
+        console.error(err);
+        alert("Lỗi khi tải dữ liệu!");
+    }
+});
+
+function updateMajor(id) {
+    const major = {
+        majorName: document.getElementById('majorName').value,
+        majorCode: document.getElementById('majorCode').value,
+        facultyId: parseInt(document.getElementById('majorFacultyId').value),
+        establishedDate: document.getElementById('majorDate').value,
+        description: document.getElementById('majorDescription').value
+    };
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    fetch(`/api/majors/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken
+        },
+        body: JSON.stringify(major)
+    })
+    .then(res => {
+        if (res.ok) {
+            alert("Cập nhật thành công!");
+            location.reload();
+        } else {
+            res.text().then(txt => alert("Cập nhật thất bại: " + txt));
+        }
+    })
+    .catch(err => console.error(err));
+}
+
+/* ================== Xóa Major ================== */
+document.addEventListener('click', function(e) {
+    const btnDelete = e.target.closest('.btn-delete');
+    if (!btnDelete) return;
+
+    const id = btnDelete.getAttribute('data-id');
+    if (!confirm("Bạn có chắc chắn muốn xóa ngành này?")) return;
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    fetch(`/api/majors/${id}`, {
+        method: 'DELETE',
+        headers: { [csrfHeader]: csrfToken }
+    })
+    .then(res => {
+        if (res.ok) {
+            alert("Xóa thành công!");
+            location.reload();
+        } else {
+            res.text().then(txt => alert("Xóa thất bại: " + txt));
+        }
+    })
+    .catch(err => console.error(err));
+});
+</script>
+
+	<div class="modal fade" id="addMajorModal" tabindex="-1"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalTitle">Thêm Ngành Mới</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="mb-3">
+							<label class="form-label">Tên ngành</label> <input type="text"
+								id="majorName" class="form-control">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Mã ngành</label> <input type="text"
+								id="majorCode" class="form-control">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Thuộc khoa</label> <select
+								id="majorFacultyId" class="form-select">
+								<option value="" disabled selected>-- Chọn Khoa --</option>
+								<option th:each="f : ${faculties}" th:value="${f.facultyId}"
+									th:text="${f.facultyName}"></option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Ngày thành lập</label> <input
+								type="date" id="majorDate" class="form-control">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Mô tả</label>
+							<textarea id="majorDescription" class="form-control"></textarea>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">Đóng</button>
+					<button type="button" id="btnSaveModal" class="btn btn-success"
+						onclick="saveNewMajor()">Lưu</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
 </body>
 </html>

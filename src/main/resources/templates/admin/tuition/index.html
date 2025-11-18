@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security6">
+<head th:replace="admin/fragment/head :: head"></head>
+
+<body>
+	<div class="wrapper">
+
+		<!-- Sidebar -->
+		<div th:replace="admin/fragment/aside :: aside"></div>
+
+		<div class="main-panel">
+			<!-- Header -->
+			<div th:replace="admin/fragment/header :: header"></div>
+
+			<div class="container">
+				<div class="page-inner">
+
+					<div class="page-header">
+						<h4 class="page-title">📘 Quản lý công thức học phí</h4>
+					</div>
+
+					<!-- ✅ FORM NHẬP CÔNG THỨC -->
+					<form th:action="@{/admin/tuition/save}" th:object="${newFormula}"
+						method="post" class="border p-3 rounded bg-light">
+						<div class="row mb-3">
+							<div class="col-md-4">
+								<label>Học kỳ</label> <input type="text" th:field="*{semester}"
+									class="form-control" placeholder="20241" required>
+							</div>
+							<div class="col-md-4">
+								<label>Đơn giá / tín chỉ</label> <input type="number"
+									step="0.01" th:field="*{pricePerCredit}" class="form-control"
+									required>
+							</div>
+							<div class="col-md-4">
+								<label>Hệ đào tạo</label> <select th:field="*{trainingSystem}"
+									class="form-control">
+									<option value="CHINH_QUY">Chính quy</option>
+									<option value="CLC">Chất lượng cao</option>
+									<option value="LIEN_THONG">Liên thông</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="row mb-3">
+							<div class="col-md-4">
+								<label>Hệ số đào tạo</label> <input type="number" step="0.1"
+									th:field="*{trainingCoeff}" class="form-control">
+							</div>
+							<div class="col-md-4">
+								<label>Hệ số học phần</label> <input type="number" step="0.1"
+									th:field="*{subjectCoeff}" class="form-control">
+							</div>
+							<div class="col-md-4">
+								<label>Phụ thu</label> <input type="number" step="0.01"
+									th:field="*{extraFee}" class="form-control">
+							</div>
+						</div>
+
+						<div class="mb-3">
+							<label>Ghi chú</label>
+							<textarea th:field="*{note}" class="form-control" rows="2"></textarea>
+						</div>
+
+						<input type="hidden" th:field="*{createdBy}" value="admin">
+						<button type="submit" class="btn btn-success">💾 Lưu công
+							thức</button>
+					</form>
+
+					<!-- ✅ DANH SÁCH CÔNG THỨC -->
+					<h4 class="mt-5">📄 Danh sách công thức</h4>
+					<table class="table table-bordered mt-3">
+						<thead class="table-secondary">
+							<tr>
+								<th>#</th>
+								<th>Học kỳ</th>
+								<th>Đơn giá</th>
+								<th>Hệ đào tạo</th>
+								<th>Hệ số đào tạo</th>
+								<th>Hệ số học phần</th>
+								<th>Phụ thu</th>
+								<th>Trạng thái</th>
+								<th>Thao tác</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="f : ${formulas}">
+								<td th:text="${f.id}"></td>
+								<td th:text="${f.semester}"></td>
+								<td th:text="${f.pricePerCredit}"></td>
+								<td th:text="${f.trainingSystem}"></td>
+								<td th:text="${f.trainingCoeff}"></td>
+								<td th:text="${f.subjectCoeff}"></td>
+								<td th:text="${f.extraFee}"></td>
+								<td><span th:if="${f.isActive}" class="badge bg-success">Đang
+										dùng</span> <span th:if="${!f.isActive}" class="badge bg-secondary">Không
+										dùng</span></td>
+								<td><a th:href="@{'/admin/tuition/delete/' + ${f.id}}"
+									class="btn btn-danger btn-sm"
+									onclick="return confirm('Xóa công thức này?')">🗑 Xoá</a> <a
+									th:href="@{'/admin/tuition/activate/' + ${f.id}}"
+									class="btn btn-primary btn-sm">✔ Dùng</a></td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<div th:replace="admin/fragment/footer :: footer"></div>
+		</div>
+	</div>
+
+	<!-- Core JS -->
+	<script th:src="@{/assets/js/core/jquery-3.7.1.min.js}"></script>
+	<script th:src="@{/assets/js/core/popper.min.js}"></script>
+	<script th:src="@{/assets/js/core/bootstrap.min.js}"></script>
+
+	<!-- Plugins -->
+	<script
+		th:src="@{/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart.js/chart.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart-circle/circles.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/datatables/datatables.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/jsvectormap.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/world.js}"></script>
+	<script th:src="@{/assets/js/plugin/gmaps/gmaps.js}"></script>
+	<script th:src="@{/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
+	<script th:src="@{/assets/js/kaiadmin.min.js}"></script>
+
+</body>
+</html>

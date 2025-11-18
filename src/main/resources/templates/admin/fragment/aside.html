@@ -30,7 +30,13 @@
 						<div class="collapse" id="daoTaoMenu">
 							<ul class="nav nav-collapse">
 								<li><a href="../chuong-trinh-dao-tao.html"> <span
-										class="sub-item">Danh sách chương trình</span>
+										class="sub-item">Quản lý học phần</span>
+								</a></li>
+								<li><a href="../quan-ly-chuong-trinh.html"> <span
+										class="sub-item">Quản lý khóa học</span>
+								</a></li>
+								<li><a href="../quan-ly-chuong-trinh.html"> <span
+										class="sub-item">Quản lý khối kiến thức</span>
 								</a></li>
 								<li><a href="../quan-ly-chuong-trinh.html"> <span
 										class="sub-item">Quản lý chương trình đào tạo</span>
@@ -66,19 +72,21 @@
 								<li><a th:href="@{/admin/lecturer/index}"> <span
 										class="sub-item">Danh sách giảng viên</span>
 								</a></li>
-								<li><a href="../quan-ly-giang-vien.html"> <span
-										class="sub-item">Quản lý giảng viên</span>
-								</a></li>
 							</ul>
 						</div></li>
-					<li class="nav-item"><a href="../tim-kiem.html"> <i
-							class="fas fa-search"></i>
-							<p>Tìm kiếm</p>
+					<li class="nav-item"><a th:href="@{/admin/tuition/index}"> <i
+							class="fas fa-money-bill-wave"></i>
+							<p>Học phí</p>
+					</a></li>
+					<li class="nav-item"><a th:href="@{/admin/statistics/index}"> <i
+							class="fas fa-chart-bar"></i>
+							<p>Thống kê</p>
 					</a></li>
 					<li class="nav-item"><a href="../bao-cao.html"> <i
 							class="fas fa-file-alt"></i>
 							<p>Báo cáo</p>
 					</a></li>
+
 				</ul>
 			</div>
 		</div>

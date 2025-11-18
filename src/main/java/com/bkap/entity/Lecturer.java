@@ -1,7 +1,10 @@
 package com.bkap.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,17 +19,19 @@ public class Lecturer {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "lecturer_id")
-    private Integer lecturerId;
+    private Long lecturerId;
 
     @Column(name = "lecturer_name", nullable = false, length = 255)
     private String lecturerName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "school_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "lecturers"})
     private School school;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "faculty_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "lecturers"})
     private Faculty faculty;
 
     @Column(name = "position", length = 255)
@@ -42,11 +47,11 @@ public class Lecturer {
     public Lecturer() {}
 
     // Getters and Setters
-    public Integer getLecturerId() {
+    public Long getLecturerId() {
         return lecturerId;
     }
 
-    public void setLecturerId(Integer lecturerId) {
+    public void setLecturerId(Long lecturerId) {
         this.lecturerId = lecturerId;
     }
 

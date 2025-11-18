@@ -52,4 +52,22 @@ public class SchoolServiceImpl implements SchoolServices {
     public List<School> findAllNoPaging() {
         return schoolRepository.findAll();
     }
+
+	@Override
+	public School save(School school) {
+		// TODO Auto-generated method stub
+		return schoolRepository.save(school);
+	}
+
+	@Override
+	public void delete(Long id) {
+		// TODO Auto-generated method stub
+		schoolRepository.deleteById(id);
+	}
+
+	@Override
+	public Optional<School> findById(Long id) {
+		// TODO Auto-generated method stub
+		return schoolRepository.findById(id);
+	}
 }

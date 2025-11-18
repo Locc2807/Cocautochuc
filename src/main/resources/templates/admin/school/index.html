@@ -1,144 +1,156 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/extras/spring-security6">
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security6">
 <head th:replace="admin/fragment/head :: head"></head>
 
 <body>
-<div class="wrapper">
+	<div class="wrapper">
 
-    <!-- Sidebar -->
-    <div th:replace="admin/fragment/aside :: aside"></div>
-    <!-- End Sidebar -->
+		<!-- Sidebar -->
+		<div th:replace="admin/fragment/aside :: aside"></div>
+		<!-- End Sidebar -->
 
-    <div class="main-panel">
-        <!-- Header -->
-        <div th:replace="admin/fragment/header :: header"></div>
+		<div class="main-panel">
+			<!-- Header -->
+			<div th:replace="admin/fragment/header :: header"></div>
 
-        <div class="container">
-            <div class="page-inner">
-                <div class="page-header">
-                    <h4 class="page-title">Danh sách Trường</h4>
-                </div>
+			<div class="container">
+				<div class="page-inner">
+					<div class="page-header">
+						<h4 class="page-title">Danh sách Trường</h4>
+					</div>
 
-                <!-- Form tìm kiếm và lọc -->
-                <form class="row mb-3" th:action="@{/admin/school}" method="get">
-                    <div class="col-md-4">
-                        <input type="text" class="form-control" name="keyword"
-                               placeholder="Tìm kiếm theo trường" th:value="${keyword}">
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select" name="schoolId">
-                            <option th:each="schoolItem : ${schools}"
-                                    th:value="${schoolItem.id}" th:text="${schoolItem.name}"
-                                    th:selected="${schoolItem.id == schoolId}"></option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary">Tìm</button>
-                    </div>
-                </form>
+					<!-- Form tìm kiếm và lọc -->
+					<form class="row mb-3" th:action="@{/admin/school}" method="get">
+						<div class="col-md-4">
+							<input type="text" class="form-control" name="keyword"
+								placeholder="Tìm kiếm theo trường" th:value="${keyword}">
+						</div>
+						<div class="col-md-3">
+							<select class="form-select" name="schoolId">
+								<option th:each="schoolItem : ${schools}"
+									th:value="${schoolItem.id}" th:text="${schoolItem.name}"
+									th:selected="${schoolItem.id == schoolId}"></option>
+							</select>
+						</div>
+						<div class="col-md-2">
+							<button type="submit" class="btn btn-primary">Tìm</button>
+						</div>
+					</form>
 
-                <!-- Nút chỉnh sửa / thêm mới / lưu / hủy -->
-                <div class="mb-3 d-flex justify-content-end align-items-center gap-2">
-                    <button type="button" id="btnAddNew" class="btn btn-success d-none" style="margin-right:600px;">
-                        <i class="fa fa-plus"></i> Thêm mới
-                    </button>
-                    <button type="button" id="btnEditToggle" class="btn btn-warning">
-                        <i class="fa fa-pen"></i> Chỉnh sửa
-                    </button>
-                    <button type="button" id="btnSaveChanges" class="btn btn-success d-none">
-                        <i class="fa fa-save"></i> Lưu thay đổi
-                    </button>
-                    <button type="button" id="btnCancelEdit" class="btn btn-secondary d-none">
-                        <i class="fa fa-times"></i> Hủy chỉnh sửa
-                    </button>
-                </div>
+					<!-- Nút chỉnh sửa / thêm mới / lưu / hủy -->
+					<div
+						class="mb-3 d-flex justify-content-end align-items-center gap-2">
+						<button type="button" id="btnAddNew"
+							class="btn btn-success d-none" style="margin-right: 600px;">
+							<i class="fa fa-plus"></i> Thêm mới
+						</button>
+						<button type="button" id="btnEditToggle" class="btn btn-warning">
+							<i class="fa fa-pen"></i> Chỉnh sửa
+						</button>
+						<button type="button" id="btnSaveChanges"
+							class="btn btn-success d-none">
+							<i class="fa fa-save"></i> Lưu thay đổi
+						</button>
+						<button type="button" id="btnCancelEdit"
+							class="btn btn-secondary d-none">
+							<i class="fa fa-times"></i> Hủy chỉnh sửa
+						</button>
+					</div>
 
-                <div class="page-category">
-                    <table class="table table-bordered table-striped">
-                        <thead class="table-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>Tên trường</th>
-                            <th>Đại học</th>
-                            <th>Địa chỉ</th>
-                            <th>Điện thoại</th>
-                            <th>Email</th>
-                            <th class="edit-column d-none">Thao tác</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="school : ${schoolPage}">
-                            <td th:text="${school.id}"></td>
-                            <td th:text="${school.name}"></td>
-                            <td th:text="${school.university != null ? school.university.name : 'N/A'}"></td>
-                            <td th:text="${school.address}"></td>
-                            <td th:text="${school.phone}"></td>
-                            <td th:text="${school.email}"></td>
-                            <td class="edit-column d-none">
-                                <button class="btn btn-sm btn-primary me-1" title="Sửa">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-                                <button class="btn btn-sm btn-danger" title="Xóa">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+					<div class="page-category">
+						<table class="table table-bordered table-striped">
+							<thead class="table-dark">
+								<tr>
+									<th>ID</th>
+									<th>Tên trường</th>
+									<th>Đại học</th>
+									<th>Địa chỉ</th>
+									<th>Điện thoại</th>
+									<th>Email</th>
+									<th class="edit-column d-none">Thao tác</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="school : ${schoolPage}">
+									<td th:text="${school.id}"></td>
+									<td th:text="${school.name}"></td>
+									<td
+										th:text="${school.university != null ? school.university.name : 'N/A'}"></td>
+									<td th:text="${school.address}"></td>
+									<td th:text="${school.phone}"></td>
+									<td th:text="${school.email}"></td>
+									<td class="edit-column d-none">
+										<button class="btn btn-sm btn-primary me-1 btn-edit"
+											title="Sửa" th:data-id="${school.id}">
+											<i class="fa fa-edit"></i>
+										</button>
+										<button class="btn btn-sm btn-danger btn-delete" title="Xóa"
+											th:data-id="${school.id}">
+											<i class="fa fa-trash"></i>
+										</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 
-                    <div class="d-flex justify-content-center mt-3">
-                        <ul class="pagination">
-                            <!-- Nút Previous -->
-                            <li class="page-item" th:classappend="${!schoolPage.hasPrevious()} ? 'disabled'">
-                                <a class="page-link"
-                                   th:href="@{/admin/school(page=${schoolPage.number - 1}, size=${schoolPage.size}, keyword=${keyword}, schoolId=${schoolId})}">«</a>
-                            </li>
+						<div class="d-flex justify-content-center mt-3">
+							<ul class="pagination">
+								<!-- Nút Previous -->
+								<li class="page-item"
+									th:classappend="${!schoolPage.hasPrevious()} ? 'disabled'">
+									<a class="page-link"
+									th:href="@{/admin/school(page=${schoolPage.number - 1}, size=${schoolPage.size}, keyword=${keyword}, schoolId=${schoolId})}">«</a>
+								</li>
 
-                            <!-- Các số trang -->
-                            <li class="page-item"
-                                th:each="i : ${#numbers.sequence(0, schoolPage.totalPages - 1)}"
-                                th:classappend="${i == schoolPage.number} ? 'active'"><a
-                                    class="page-link"
-                                    th:href="@{/admin/school(page=${i}, size=${schoolPage.size}, keyword=${keyword}, schoolId=${schoolId})}"
-                                    th:text="${i + 1}"></a></li>
+								<!-- Các số trang -->
+								<li class="page-item"
+									th:each="i : ${#numbers.sequence(0, schoolPage.totalPages - 1)}"
+									th:classappend="${i == schoolPage.number} ? 'active'"><a
+									class="page-link"
+									th:href="@{/admin/school(page=${i}, size=${schoolPage.size}, keyword=${keyword}, schoolId=${schoolId})}"
+									th:text="${i + 1}"></a></li>
 
-                            <!-- Nút Next -->
-                            <li class="page-item" th:classappend="${!schoolPage.hasNext()} ? 'disabled'"><a
-                                    class="page-link"
-                                    th:href="@{/admin/school(page=${schoolPage.number + 1}, size=${schoolPage.size}, keyword=${keyword}, schoolId=${schoolId})}">»</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+								<!-- Nút Next -->
+								<li class="page-item"
+									th:classappend="${!schoolPage.hasNext()} ? 'disabled'"><a
+									class="page-link"
+									th:href="@{/admin/school(page=${schoolPage.number + 1}, size=${schoolPage.size}, keyword=${keyword}, schoolId=${schoolId})}">»</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
 
-        <!-- Footer -->
-        <div th:replace="admin/fragment/footer :: footer"></div>
-    </div>
-</div>
+			<!-- Footer -->
+			<div th:replace="admin/fragment/footer :: footer"></div>
+		</div>
+	</div>
 
-<!-- Core JS -->
-<script th:src="@{/assets/js/core/jquery-3.7.1.min.js}"></script>
-<script th:src="@{/assets/js/core/popper.min.js}"></script>
-<script th:src="@{/assets/js/core/bootstrap.min.js}"></script>
+	<!-- Core JS -->
+	<script th:src="@{/assets/js/core/jquery-3.7.1.min.js}"></script>
+	<script th:src="@{/assets/js/core/popper.min.js}"></script>
+	<script th:src="@{/assets/js/core/bootstrap.min.js}"></script>
 
-<!-- Plugins -->
-<script th:src="@{/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
-<script th:src="@{/assets/js/plugin/chart.js/chart.min.js}"></script>
-<script th:src="@{/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
-<script th:src="@{/assets/js/plugin/chart-circle/circles.min.js}"></script>
-<script th:src="@{/assets/js/plugin/datatables/datatables.min.js}"></script>
-<script th:src="@{/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
-<script th:src="@{/assets/js/plugin/jsvectormap/jsvectormap.min.js}"></script>
-<script th:src="@{/assets/js/plugin/jsvectormap/world.js}"></script>
-<script th:src="@{/assets/js/plugin/gmaps/gmaps.js}"></script>
-<script th:src="@{/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
-<script th:src="@{/assets/js/kaiadmin.min.js}"></script>
+	<!-- Plugins -->
+	<script
+		th:src="@{/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart.js/chart.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart-circle/circles.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/datatables/datatables.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/jsvectormap.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/world.js}"></script>
+	<script th:src="@{/assets/js/plugin/gmaps/gmaps.js}"></script>
+	<script th:src="@{/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
+	<script th:src="@{/assets/js/kaiadmin.min.js}"></script>
 
-<!-- Script toggle chế độ chỉnh sửa -->
-<script>
+	<!-- Script toggle chế độ chỉnh sửa -->
+	<script>
     const btnEditToggle = document.getElementById('btnEditToggle');
     const btnSave = document.getElementById('btnSaveChanges');
     const btnCancel = document.getElementById('btnCancelEdit');
@@ -170,10 +182,211 @@
         btnCancel.classList.add('d-none');
     });
 
-    btnAddNew.addEventListener('click', () => {
-        alert('Mở form thêm mới!');
-        // TODO: thêm logic mở modal hoặc form thêm mới
+    function saveNewSchool() {
+        const school = {
+            name: document.getElementById('schoolName').value,
+            universityId: document.getElementById('schoolUniversityId').value,
+            address: document.getElementById('schoolAddress').value,
+            phone: document.getElementById('schoolPhone').value,
+            email: document.getElementById('schoolEmail').value
+        };
+        
+        const csrfToken = document.body.getAttribute('data-csrf-token');
+        const csrfHeader = document.body.getAttribute('data-csrf-header');
+
+        fetch('/api/schools', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken 
+            },
+            body: JSON.stringify(school)
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.text();
+            }
+            throw new Error("Lỗi khi lưu");
+        })
+        .then(data => {
+            alert("Thêm trường thành công!");
+            location.reload(); // Load lại trang để thấy dữ liệu mới
+        })
+        .catch(error => {
+            alert("Thêm trường thất bại!");
+            console.error(error);
+        });
+    }
+    
+    //Sửa
+    document.addEventListener('click', async function (e) {
+        const btn = e.target.closest('.btn-edit'); // kiểm tra có phải nút sửa ko
+        if (!btn) return;
+
+        const id = btn.getAttribute('data-id');
+
+        try {
+            const res = await fetch(`/api/schools/${id}`);
+
+            if (!res.ok) {
+                console.error('Lỗi HTTP:', res.status);
+                alert("Không lấy được dữ liệu từ server!");
+                return;
+            }
+
+            // ✅ Quan trọng: Chỉ gọi json nếu chắc chắn là JSON
+            const data = await res.json();
+
+            // ✅ Gán dữ liệu vào form trong modal
+            document.getElementById('schoolName').value = data.name;
+            document.getElementById('schoolUniversityId').value = data.university?.id || '';
+            document.getElementById('schoolAddress').value = data.address;
+            document.getElementById('schoolPhone').value = data.phone;
+            document.getElementById('schoolEmail').value = data.email;
+
+            // ✅ Set trạng thái Modal thành "Cập nhật"
+            document.getElementById('modalTitle').innerText = "Chỉnh sửa Trường";
+            document.getElementById('btnSaveModal').setAttribute('onclick', `updateSchool(${id})`);
+
+            // ✅ Hiển thị Modal
+            const modal = new bootstrap.Modal(document.getElementById('addSchoolModal'));
+            modal.show();
+
+        } catch (err) {
+            console.error("Lỗi khi parse JSON hoặc fetch:", err);
+            alert("Dữ liệu trả về không đúng định dạng JSON!");
+        }
     });
+    
+    btnAddNew.addEventListener('click', () => {
+        document.getElementById('modalTitle').innerText = "Thêm Trường Mới";
+        document.getElementById('btnSaveModal').setAttribute('onclick', 'saveNewSchool()');
+        
+        // Reset form
+        document.getElementById('schoolName').value = '';
+        document.getElementById('schoolUniversityId').value = '';
+        document.getElementById('schoolAddress').value = '';
+        document.getElementById('schoolPhone').value = '';
+        document.getElementById('schoolEmail').value = '';
+
+        new bootstrap.Modal(document.getElementById('addSchoolModal')).show();
+    });
+
+
+    function updateSchool(id) {
+        const school = {
+            name: document.getElementById('schoolName').value,
+            university: { 
+                id: parseInt(document.getElementById('schoolUniversityId').value) 
+            },
+            address: document.getElementById('schoolAddress').value,
+            phone: document.getElementById('schoolPhone').value,
+            email: document.getElementById('schoolEmail').value
+        };
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content') || '';
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content') || 'X-CSRF-TOKEN';
+
+        fetch(`/api/schools/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            },
+            body: JSON.stringify(school)
+        })
+        .then(res => {
+            if (res.ok) {
+                alert("Cập nhật thành công!");
+                location.reload();
+            } else {
+                res.text().then(text => {
+                    alert("Cập nhật thất bại! " + text);
+                });
+            }
+        })
+        .catch(err => console.error(err));
+    }
+
+    
+ // XÓA
+    document.addEventListener('click', function (e) {
+        const btnDelete = e.target.closest('.btn-delete');
+        if (!btnDelete) return;
+
+        const id = btnDelete.getAttribute('data-id');
+
+        // Xác nhận trước khi xóa
+        if (!confirm("Bạn có chắc chắn muốn xóa trường này?")) return;
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content') || '';
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content') || 'X-CSRF-TOKEN';
+
+        fetch(`/api/schools/${id}`, {
+            method: 'DELETE',
+            headers: {
+                [csrfHeader]: csrfToken 
+            }
+        })
+        .then(res => {
+            if (res.ok) {
+                alert("Xóa thành công!");
+                location.reload();
+            } else {
+                res.text().then(txt => alert("Xóa thất bại! " + txt));
+            }
+        })
+        .catch(err => console.error("Lỗi:", err));
+    });
+
 </script>
+
+	<!-- Modal Thêm Mới -->
+	<div class="modal fade" id="addSchoolModal" tabindex="-1"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalTitle">Thêm Trường Mới</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<form id="formAddSchool">
+						<div class="mb-3">
+							<label class="form-label">Tên trường</label> <input type="text"
+								class="form-control" id="schoolName" required>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Đại học</label> <select
+								class="form-select" id="schoolUniversityId" required>
+								<option value="" disabled selected>-- Chọn Đại học --</option>
+								<option th:each="u : ${universities}" th:value="${u.id}"
+									th:text="${u.name}"></option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Địa chỉ</label> <input type="text"
+								class="form-control" id="schoolAddress">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Điện thoại</label> <input type="text"
+								class="form-control" id="schoolPhone">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Email</label> <input type="email"
+								class="form-control" id="schoolEmail">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">Đóng</button>
+					<button type="button" class="btn btn-success" id="btnSaveModal"
+						onclick="saveNewSchool()">Lưu</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </body>
 </html>

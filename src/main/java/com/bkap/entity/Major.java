@@ -2,8 +2,11 @@ package com.bkap.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,8 +29,9 @@ public class Major {
     @Column(name = "major_name", nullable = false, length = 255)
     private String majorName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "faculty_id", nullable = false, foreignKey = @ForeignKey(name = "fk_major_faculty"))
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Faculty faculty;
 
     @Column(name = "established_date")

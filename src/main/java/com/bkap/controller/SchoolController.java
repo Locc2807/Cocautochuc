@@ -13,13 +13,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bkap.entity.School;
+import com.bkap.entity.University;
 import com.bkap.servies.SchoolServices;
+import com.bkap.servies.UniversityServices;
 
 @Controller
 @RequestMapping("/admin")
 public class SchoolController {
 	@Autowired
 	private SchoolServices schoolServices;
+	
+	@Autowired
+	private UniversityServices universityServices;
 
 	@GetMapping({"/school", "/school/index"})
 	public String listSchools(Model model,
@@ -43,9 +48,11 @@ public class SchoolController {
 	    }
 
 	    List<School> schools = schoolServices.findAllNoPaging();
+	    List<University> universities = universityServices.getAll();
 
 	    model.addAttribute("schoolPage", schoolPage);
 	    model.addAttribute("schools", schools);
+	    model.addAttribute("universities", universities);
 	    model.addAttribute("keyword", keyword);
 	    model.addAttribute("schoolId", schoolId);
 

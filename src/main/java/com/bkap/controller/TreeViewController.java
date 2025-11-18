@@ -26,7 +26,7 @@ public class TreeViewController {
 	
 	@GetMapping("/tree_view/index")
 	public String treeView(Model model) {
-		model.addAttribute("universities", universityServices.findAll());
+		model.addAttribute("universities", universityServices.getAll());
 		model.addAttribute("schools", schoolServices.getAll());
 		model.addAttribute("faculties", facultyServices.getAll());
 
