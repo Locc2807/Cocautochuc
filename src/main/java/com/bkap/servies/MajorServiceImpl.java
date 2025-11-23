@@ -68,6 +68,11 @@ public class MajorServiceImpl implements MajorServices{
 		// TODO Auto-generated method stub
 		return majorRepository.findById(id);
 	}
+	@Override
+	public Page<Major> findByFacultyIdPaged(Long facultyId, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return majorRepository.findByFaculty_FacultyId(facultyId, pageable);
+	}
 
 	
 }

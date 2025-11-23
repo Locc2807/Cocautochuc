@@ -76,4 +76,10 @@ public class FacultyServiceImpl implements FacultyServices{
 		return facultyRepository.findById(id);
 	}
 
+	@Override
+	public Page<Faculty> findBySchoolIdPaged(Long schoolId, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return facultyRepository.findBySchoolId(schoolId, pageable);
+	}
+
 }

@@ -10,15 +10,22 @@ import com.bkap.entity.Faculty;
 
 public interface FacultyServices {
 	List<Faculty> getAll();
+
 	Page<Faculty> getAll(Pageable pageable);
-	
+
 	Page<Faculty> findByName(String keyword, Pageable pageable);
+
 	Page<Faculty> findAll(Pageable pageable);
-	
+
 	Page<Faculty> findByIdPaged(Long id, Pageable pageable);
-    List<Faculty> findAllNoPaging();
-    
-    Faculty save(Faculty faculty);
-    void delete(Long id);
-    Optional<Faculty> findById(Long id); 
+
+	Page<Faculty> findBySchoolIdPaged(Long schoolId, Pageable pageable);
+
+	List<Faculty> findAllNoPaging();
+
+	Faculty save(Faculty faculty);
+
+	void delete(Long id);
+
+	Optional<Faculty> findById(Long id);
 }

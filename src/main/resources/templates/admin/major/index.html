@@ -22,20 +22,24 @@
 
 					<!-- Form tìm kiếm và lọc -->
 					<form class="row mb-3" th:action="@{/admin/major}" method="get">
+						<!-- Thanh tìm kiếm vẫn giữ -->
 						<div class="col-md-4">
 							<input type="text" class="form-control" name="keyword"
-								placeholder="Tìm kiếm theo ngành" th:value="${keyword}">
+								placeholder="Tìm kiếm (tên ngành)" th:value="${keyword}">
 						</div>
+
+						<!-- Lọc theo khoa -->
 						<div class="col-md-3">
-							<select class="form-select" name="majorId">
-								<option th:each="majorItem : ${majors}"
-									th:value="${majorItem.majorId}"
-									th:text="${majorItem.majorName}"
-									th:selected="${majorItem.majorId == majorId}"></option>
+							<select class="form-select" name="facultyId">
+								<option value="" selected>-- Chọn Khoa --</option>
+								<option th:each="f : ${faculties}" th:value="${f.facultyId}"
+									th:text="${f.facultyName}"
+									th:selected="${f.facultyId == facultyId}"></option>
 							</select>
 						</div>
+
 						<div class="col-md-2">
-							<button type="submit" class="btn btn-primary">Tìm</button>
+							<button type="submit" class="btn btn-primary">Tìm / Lọc</button>
 						</div>
 					</form>
 

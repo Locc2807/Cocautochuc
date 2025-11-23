@@ -24,14 +24,13 @@
 					<form class="row mb-3" th:action="@{/admin/lecturer}" method="get">
 						<div class="col-md-4">
 							<input type="text" class="form-control" name="keyword"
-								placeholder="Tìm kiếm" th:value="${keyword}">
+								placeholder="Tìm kiếm theo chức vụ" th:value="${keyword}">
 						</div>
 						<div class="col-md-3">
-							<select class="form-select" name="lecturerId">
-								<option th:each="lecturerItem : ${lecturers}"
-									th:value="${lecturerItem.lecturerId}"
-									th:text="${lecturerItem.lecturerName}"
-									th:selected="${lecturerItem.lecturerId == lecturerId}"></option>
+							<select class="form-select" name="position">
+								<option value="">-- Chọn chức vụ --</option>
+								<option th:each="pos : ${positions}" th:value="${pos}"
+									th:text="${pos}" th:selected="${pos == keyword}"></option>
 							</select>
 						</div>
 						<div class="col-md-2">
@@ -63,7 +62,7 @@
 						<table class="table table-bordered table-striped">
 							<thead class="table-dark">
 								<tr>
-									<th>ID</th>
+									<th>Mã giảng viên</th>
 									<th>Tên giảng viên</th>
 									<th>Trường</th>
 									<th>Chức vụ</th>
@@ -74,7 +73,7 @@
 							</thead>
 							<tbody>
 								<tr th:each="lecturer : ${lecturerPage}">
-									<td th:text="${lecturer.lecturerId}"></td>
+									<td th:text="${lecturer.lecturerCode}"></td>
 									<td th:text="${lecturer.lecturerName}"></td>
 									<td
 										th:text="${lecturer.school != null ? lecturer.school.name : 'N/A'}"></td>
@@ -149,7 +148,7 @@
 	<script th:src="@{/assets/js/plugin/gmaps/gmaps.js}"></script>
 	<script th:src="@{/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
 	<script th:src="@{/assets/js/kaiadmin.min.js}"></script>
-	
+
 	<script>
 /* ============== Toggle chế độ chỉnh sửa ============== */
 const btnLecturerEditToggle = document.getElementById('btnEditToggle');
@@ -303,43 +302,50 @@ document.addEventListener('click', function(e) {
     });
 });
 </script>
-	
+
 	<div class="modal fade" id="lecturerModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="lecturerModalTitle">Thêm Giảng viên</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3"><label>Tên</label>
-            <input id="lecturerName" class="form-control">
-          </div>
-          <div class="mb-3"><label>Thuộc trường</label>
-            <select id="lecturerSchoolId" class="form-select">
-              <option disabled selected>-- Chọn trường --</option>
-              <option th:each="s : ${schools}" th:value="${s.id}" th:text="${s.name}"></option>
-            </select>
-          </div>
-          <div class="mb-3"><label>Chức vụ</label>
-            <input id="lecturerPosition" class="form-control">
-          </div>
-          <div class="mb-3"><label>Email</label>
-            <input id="lecturerEmail" class="form-control">
-          </div>
-          <div class="mb-3"><label>Số điện thoại</label>
-            <input id="lecturerPhone" class="form-control">
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-        <button id="btnSaveLecturerModal" class="btn btn-success" onclick="saveNewLecturer()">Lưu</button>
-      </div>
-    </div>
-  </div>
-</div>
-	
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="lecturerModalTitle">Thêm Giảng
+						viên</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="mb-3">
+							<label>Tên</label> <input id="lecturerName" class="form-control">
+						</div>
+						<div class="mb-3">
+							<label>Thuộc trường</label> <select id="lecturerSchoolId"
+								class="form-select">
+								<option disabled selected>-- Chọn trường --</option>
+								<option th:each="s : ${schools}" th:value="${s.id}"
+									th:text="${s.name}"></option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label>Chức vụ</label> <input id="lecturerPosition"
+								class="form-control">
+						</div>
+						<div class="mb-3">
+							<label>Email</label> <input id="lecturerEmail"
+								class="form-control">
+						</div>
+						<div class="mb-3">
+							<label>Số điện thoại</label> <input id="lecturerPhone"
+								class="form-control">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+					<button id="btnSaveLecturerModal" class="btn btn-success"
+						onclick="saveNewLecturer()">Lưu</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </body>
 </html>

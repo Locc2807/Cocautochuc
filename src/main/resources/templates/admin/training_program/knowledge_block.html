@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/fragment/head :: head"></head>
+
+<body>
+	<div class="wrapper">
+		<div th:replace="admin/fragment/aside :: aside"></div>
+
+		<div class="main-panel">
+			<div th:replace="admin/fragment/header :: header"></div>
+
+			<div class="container">
+				<div class="page-inner">
+					<div class="page-header">
+						<h4 class="page-title">📚 Quản lý Khối kiến thức</h4>
+					</div>
+
+					<!-- Form tìm kiếm theo CTĐT -->
+					<form class="row mb-3" th:action="@{/admin/training_program/knowledge_block}"
+						method="get">
+						<div class="col-md-4">
+							<input type="text" class="form-control" name="keyword"
+								placeholder="Tìm kiếm theo tên khối" th:value="${keyword}">
+						</div>
+						<div class="col-md-3">
+							<select class="form-select" name="curriculumId">
+								<option value="">--Chọn CTĐT--</option>
+								<option th:each="c : ${curriculums}" th:value="${c.id}"
+									th:text="${c.major.majorName} + ' ' + ${c.year}"
+									th:selected="${c.id == curriculumId}"></option>
+							</select>
+						</div>
+						<div class="col-md-2">
+							<button type="submit" class="btn btn-primary">Tìm</button>
+						</div>
+					</form>
+
+					<!-- Nút thêm/sửa/lưu/hủy -->
+					<div
+						class="mb-3 d-flex justify-content-end align-items-center gap-2">
+						<button type="button" id="btnAddNewBlock"
+							class="btn btn-success d-none">
+							<i class="fa fa-plus"></i> Thêm mới
+						</button>
+						<button type="button" id="btnEditToggleBlock"
+							class="btn btn-warning">
+							<i class="fa fa-pen"></i> Chỉnh sửa
+						</button>
+						<button type="button" id="btnSaveChangesBlock"
+							class="btn btn-success d-none">
+							<i class="fa fa-save"></i> Lưu thay đổi
+						</button>
+						<button type="button" id="btnCancelEditBlock"
+							class="btn btn-secondary d-none">
+							<i class="fa fa-times"></i> Hủy chỉnh sửa
+						</button>
+					</div>
+
+					<!-- Bảng KnowledgeBlock -->
+					<div class="card p-3">
+						<table class="table table-bordered table-striped">
+							<thead class="table-dark">
+								<tr>
+									<th>Tên khối kiến thức</th>
+									<th>CTĐT</th>
+									<th>Mô tả</th>
+									<th class="edit-column d-none">Thao tác</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="block : ${blockPage.content}">
+									<td th:text="${block.name}"></td>
+									<td
+										th:text="${block.curriculum.major.majorName} + ' ' + ${block.curriculum.year}"></td>
+									<td th:text="${block.description}"></td>
+									<td class="edit-column d-none">
+										<button class="btn btn-sm btn-primary me-1 btn-edit"
+											title="Sửa" th:data-id="${block.id}">
+											<i class="fa fa-edit"></i>
+										</button>
+										<button class="btn btn-sm btn-danger btn-delete" title="Xóa"
+											th:data-id="${block.id}">
+											<i class="fa fa-trash"></i>
+										</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<!-- Pagination -->
+						<div class="d-flex justify-content-center mt-3">
+							<ul class="pagination">
+								<li class="page-item"
+									th:classappend="${!blockPage.hasPrevious()} ? 'disabled'">
+									<a class="page-link"
+									th:href="@{/admin/training_program/knowledge_block(page=${blockPage.number - 1}, size=${blockPage.size})}">«</a>
+								</li>
+								<li class="page-item"
+									th:each="i : ${#numbers.sequence(0, blockPage.totalPages - 1)}"
+									th:classappend="${i == blockPage.number} ? 'active'"><a
+									class="page-link"
+									th:href="@{/admin/training_program/knowledge_block(page=${i}, size=${blockPage.size})}"
+									th:text="${i + 1}"></a></li>
+								<li class="page-item"
+									th:classappend="${!blockPage.hasNext()} ? 'disabled'"><a
+									class="page-link"
+									th:href="@{/admin/training_program/knowledge_block(page=${blockPage.number + 1}, size=${blockPage.size})}">»</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<div th:replace="admin/fragment/footer :: footer"></div>
+		</div>
+	</div>
+
+	<!-- Modal thêm/sửa KnowledgeBlock -->
+	<div class="modal fade" id="blockModal" tabindex="-1"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalTitle">Thêm khối kiến thức
+						mới</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<form id="blockForm">
+						<input type="hidden" id="blockId">
+						<div class="mb-2">
+							<label>Tên khối:</label> <input type="text" id="blockName"
+								class="form-control" required>
+						</div>
+						<div class="mb-2">
+							<label>Chương trình đào tạo:</label> <select id="curriculumId"
+								class="form-select" required>
+								<option value="">--Chọn CTĐT--</option>
+								<option th:each="c : ${curriculums}" th:value="${c.id}"
+									th:text="${c.major.majorName} + ' ' + ${c.year}"></option>
+							</select>
+						</div>
+						<div class="mb-2">
+							<label>Mô tả:</label>
+							<textarea id="description" class="form-control"></textarea>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">Đóng</button>
+					<button type="button" class="btn btn-success" id="btnSaveModal">Lưu</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Core JS -->
+	<script th:src="@{/assets/js/core/jquery-3.7.1.min.js}"></script>
+	<script th:src="@{/assets/js/core/popper.min.js}"></script>
+	<script th:src="@{/assets/js/core/bootstrap.min.js}"></script>
+
+	<!-- Plugins -->
+	<script
+		th:src="@{/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart.js/chart.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart-circle/circles.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/datatables/datatables.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/jsvectormap.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/world.js}"></script>
+	<script th:src="@{/assets/js/plugin/gmaps/gmaps.js}"></script>
+	<script th:src="@{/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
+	<script th:src="@{/assets/js/kaiadmin.min.js}"></script>
+	
+	<script th:inline="javascript">
+/* ================== Toggle Edit Columns ================== */
+const btnEditToggleBlock = document.getElementById('btnEditToggleBlock');
+const btnSaveChangesBlock = document.getElementById('btnSaveChangesBlock');
+const btnCancelEditBlock = document.getElementById('btnCancelEditBlock');
+const btnAddNewBlock = document.getElementById('btnAddNewBlock');
+const editColumnsBlock = document.querySelectorAll('.edit-column');
+
+btnEditToggleBlock.addEventListener('click', () => {
+    editColumnsBlock.forEach(col => col.classList.remove('d-none'));
+    btnAddNewBlock.classList.remove('d-none');
+    btnEditToggleBlock.classList.add('d-none');
+    btnSaveChangesBlock.classList.remove('d-none');
+    btnCancelEditBlock.classList.remove('d-none');
+});
+
+btnCancelEditBlock.addEventListener('click', () => {
+    editColumnsBlock.forEach(col => col.classList.add('d-none'));
+    btnAddNewBlock.classList.add('d-none');
+    btnEditToggleBlock.classList.remove('d-none');
+    btnSaveChangesBlock.classList.add('d-none');
+    btnCancelEditBlock.classList.add('d-none');
+});
+
+btnSaveChangesBlock.addEventListener('click', () => {
+    alert('Lưu thay đổi thành công!');
+    editColumnsBlock.forEach(col => col.classList.add('d-none'));
+    btnAddNewBlock.classList.add('d-none');
+    btnEditToggleBlock.classList.remove('d-none');
+    btnSaveChangesBlock.classList.add('d-none');
+    btnCancelEditBlock.classList.add('d-none');
+});
+
+/* ================== Thêm mới KnowledgeBlock ================== */
+btnAddNewBlock.addEventListener('click', () => {
+    document.getElementById('modalTitle').innerText = "Thêm Khối kiến thức mới";
+    document.getElementById('btnSaveModal').setAttribute('onclick', 'saveNewBlock()');
+
+    // Reset form
+    document.getElementById('blockId').value = '';
+    document.getElementById('blockName').value = '';
+    document.getElementById('description').value = '';
+    document.getElementById('curriculumId').value = '';
+
+    new bootstrap.Modal(document.getElementById('blockModal')).show();
+});
+
+/* ================== Lưu KnowledgeBlock mới ================== */
+function saveNewBlock() {
+    const block = {
+        name: document.getElementById('blockName').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        curriculumId: parseInt(document.getElementById('curriculumId').value)
+    };
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    fetch('/api/knowledge-blocks', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken
+        },
+        body: JSON.stringify(block)
+    })
+    .then(res => {
+        if(res.ok){
+            alert('Thêm khối kiến thức thành công!');
+            location.reload();
+        } else {
+            res.text().then(txt => alert('Thêm thất bại: ' + txt));
+        }
+    })
+    .catch(err => console.error(err));
+}
+
+/* ================== Sửa KnowledgeBlock ================== */
+document.addEventListener('click', async function(e) {
+    const btn = e.target.closest('.btn-edit');
+    if(!btn) return;
+
+    const id = btn.getAttribute('data-id');
+    try {
+        const res = await fetch(`/api/knowledge-blocks/${id}`);
+        if(!res.ok) throw new Error('Không lấy được dữ liệu!');
+        const data = await res.json();
+
+        document.getElementById('blockId').value = data.id;
+        document.getElementById('blockName').value = data.name;
+        document.getElementById('description').value = data.description;
+        document.getElementById('curriculumId').value = data.curriculum ? data.curriculum.curriculumId : '';
+
+        document.getElementById('modalTitle').innerText = "Chỉnh sửa Khối kiến thức";
+        document.getElementById('btnSaveModal').setAttribute('onclick', `updateBlock(${id})`);
+
+        new bootstrap.Modal(document.getElementById('blockModal')).show();
+    } catch(err) {
+        console.error(err);
+        alert("Lỗi khi tải dữ liệu!");
+    }
+});
+
+/* ================== Cập nhật KnowledgeBlock ================== */
+function updateBlock(id) {
+    const block = {
+        name: document.getElementById('blockName').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        curriculumId: parseInt(document.getElementById('curriculumId').value)
+    };
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    fetch(`/api/knowledge-blocks/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken
+        },
+        body: JSON.stringify(block)
+    })
+    .then(res => {
+        if(res.ok){
+            alert('Cập nhật thành công!');
+            location.reload();
+        } else {
+            res.text().then(txt => alert('Cập nhật thất bại: ' + txt));
+        }
+    })
+    .catch(err => console.error(err));
+}
+
+/* ================== Xóa KnowledgeBlock ================== */
+document.addEventListener('click', function(e) {
+    const btnDelete = e.target.closest('.btn-delete');
+    if(!btnDelete) return;
+
+    const id = btnDelete.getAttribute('data-id');
+    if(!confirm('Bạn có chắc chắn muốn xóa khối kiến thức này?')) return;
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    fetch(`/api/knowledge-blocks/${id}`, {
+        method: 'DELETE',
+        headers: { [csrfHeader]: csrfToken }
+    })
+    .then(res => {
+        if(res.ok){
+            alert('Xóa thành công!');
+            location.reload();
+        } else {
+            res.text().then(txt => alert('Xóa thất bại: ' + txt));
+        }
+    })
+    .catch(err => console.error(err));
+});
+</script>
+
+</body>
+</html>

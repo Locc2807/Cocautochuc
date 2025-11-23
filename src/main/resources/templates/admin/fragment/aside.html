@@ -29,17 +29,17 @@
 					</a>
 						<div class="collapse" id="daoTaoMenu">
 							<ul class="nav nav-collapse">
-								<li><a href="../chuong-trinh-dao-tao.html"> <span
+								<li><a th:href="@{/admin/training_program/course}"> <span
 										class="sub-item">Quản lý học phần</span>
 								</a></li>
-								<li><a href="../quan-ly-chuong-trinh.html"> <span
+								<li><a th:href="@{/admin/training_program/batch}"> <span
 										class="sub-item">Quản lý khóa học</span>
 								</a></li>
-								<li><a href="../quan-ly-chuong-trinh.html"> <span
-										class="sub-item">Quản lý khối kiến thức</span>
+								<li><a th:href="@{/admin/training_program/knowledge_block}">
+										<span class="sub-item">Quản lý khối kiến thức</span>
 								</a></li>
-								<li><a href="../quan-ly-chuong-trinh.html"> <span
-										class="sub-item">Quản lý chương trình đào tạo</span>
+								<li><a th:href="@{/admin/training_program/curriculum}">
+										<span class="sub-item">Quản lý chương trình đào tạo</span>
 								</a></li>
 							</ul>
 						</div></li>
@@ -74,17 +74,31 @@
 								</a></li>
 							</ul>
 						</div></li>
-					<li class="nav-item"><a th:href="@{/admin/tuition/index}"> <i
-							class="fas fa-money-bill-wave"></i>
-							<p>Học phí</p>
-					</a></li>
-					<li class="nav-item"><a th:href="@{/admin/statistics/index}"> <i
-							class="fas fa-chart-bar"></i>
-							<p>Thống kê</p>
-					</a></li>
-					<li class="nav-item"><a href="../bao-cao.html"> <i
-							class="fas fa-file-alt"></i>
-							<p>Báo cáo</p>
+					<li class="nav-item"><a data-bs-toggle="collapse"
+						href="#tuitionMenu" role="button" aria-expanded="false"
+						aria-controls="tuitionMenu"> <i class="fas fa-money-bill-wave"></i>
+							<p>Học phí</p> <span class="caret"></span>
+					</a>
+						<div class="collapse" id="tuitionMenu">
+							<ul class="nav nav-collapse">
+								<!-- Nhóm I: Quản lý công thức học phí -->
+								<li><a th:href="@{/admin/tuition/index}"> <span
+										class="sub-item">Quản lý công thức</span>
+								</a></li>
+
+								<!-- Nhóm II: Hệ thống tính học phí tự động -->
+								<li><a th:href="@{/admin/tuition/calculate_form}"> <span
+										class="sub-item">Tính học phí</span>
+								</a></li>
+								<li><a th:href="@{/admin/tuition/invoice_form}"> <span
+										class="sub-item">Sinh hóa đơn</span></a></li>
+								<li><a th:href="@{/admin/tuition/debt_manage}"> <span
+										class="sub-item">Xử lý công nợ</span></a></li>
+							</ul>
+						</div></li>
+					<li class="nav-item"><a th:href="@{/admin/statistics/index}">
+							<i class="fas fa-chart-bar"></i>
+							<p>Thống kê và Báo cáo</p>
 					</a></li>
 
 				</ul>

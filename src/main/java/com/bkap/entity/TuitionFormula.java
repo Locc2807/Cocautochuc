@@ -41,7 +41,7 @@ public class TuitionFormula {
     private BigDecimal extraFee = BigDecimal.valueOf(0.0);
 
     @Column(name = "is_active", length = 1, nullable = false)
-    private String isActive = "1"; // '1' = đang dùng, '0' = không dùng
+    private String  isActive = "1"; // '1' = đang dùng, '0' = không dùng
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

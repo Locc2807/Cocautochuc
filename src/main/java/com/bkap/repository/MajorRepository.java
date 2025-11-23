@@ -12,4 +12,6 @@ public interface MajorRepository extends JpaRepository<Major, Long>{
 	List<Major> findAll();
 	
 	Page<Major> findByMajorNameContainingIgnoreCase(String name, Pageable pageable);
+	
+	Page<Major> findByFaculty_FacultyId(Long facultyId, Pageable pageable);
 }

@@ -10,4 +10,6 @@ public interface TuitionFormulaServices {
     TuitionFormula save(TuitionFormula formula);
     void delete(Long id);
     TuitionFormula getActiveFormulaBySemester(String semester);
+    void activate(Long id);
+
 }

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/fragment/head :: head"></head>
+
+<body>
+	<div class="wrapper">
+		<div th:replace="admin/fragment/aside :: aside"></div>
+
+		<div class="main-panel">
+			<div th:replace="admin/fragment/header :: header"></div>
+
+			<div class="container">
+				<div class="page-inner">
+					<div class="page-header">
+						<h4 class="page-title">📚 Quản lý Học phần</h4>
+					</div>
+
+					<!-- Form tìm kiếm -->
+					<form class="row mb-3" th:action="@{/admin/course}" method="get">
+						<div class="col-md-4">
+							<input type="text" class="form-control" name="keyword"
+								placeholder="Tìm kiếm theo tên học phần" th:value="${keyword}">
+						</div>
+						<div class="col-md-3">
+							<select class="form-select" name="facultyId">
+								<option value="">--Chọn Khoa--</option>
+								<option th:each="f : ${faculties}" th:value="${f.facultyId}"
+									th:text="${f.facultyName}"
+									th:selected="${f.facultyId == facultyId}"></option>
+							</select>
+						</div>
+						<div class="col-md-2">
+							<button type="submit" class="btn btn-primary">Tìm</button>
+						</div>
+					</form>
+
+					<!-- Nút thêm/sửa/lưu/hủy -->
+					<div
+						class="mb-3 d-flex justify-content-end align-items-center gap-2">
+						<button type="button" id="btnAddNewCourse"
+							class="btn btn-success d-none" style="margin-right: 600px;">
+							<i class="fa fa-plus"></i> Thêm mới
+						</button>
+						<button type="button" id="btnEditToggleCourse"
+							class="btn btn-warning">
+							<i class="fa fa-pen"></i> Chỉnh sửa
+						</button>
+						<button type="button" id="btnSaveChangesCourse"
+							class="btn btn-success d-none">
+							<i class="fa fa-save"></i> Lưu thay đổi
+						</button>
+						<button type="button" id="btnCancelEditCourse"
+							class="btn btn-secondary d-none">
+							<i class="fa fa-times"></i> Hủy chỉnh sửa
+						</button>
+					</div>
+
+					<!-- Bảng Course -->
+					<div class="card p-3">
+						<table class="table table-bordered table-striped">
+							<thead class="table-dark">
+								<tr>
+									<th>Mã học phần</th>
+									<th>Tên học phần</th>
+									<th>Tín chỉ</th>
+									<th>Khoa</th>
+									<th>Ngành</th>
+									<th class="edit-column d-none">Thao tác</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="course : ${coursePage.content}">
+									<td th:text="${course.courseCode}"></td>
+									<td th:text="${course.courseName}"></td>
+									<td th:text="${course.credits}"></td>
+									<td
+										th:text="${course.faculty != null ? course.faculty.facultyName : 'N/A'}"></td>
+									<td
+										th:text="${course.major != null ? course.major.majorName : 'N/A'}"></td>
+									<td class="edit-column d-none">
+										<button class="btn btn-sm btn-primary me-1 btn-edit"
+											title="Sửa" th:data-id="${course.id}">
+											<i class="fa fa-edit"></i>
+										</button>
+										<button class="btn btn-sm btn-danger btn-delete" title="Xóa"
+											th:data-id="${course.id}">
+											<i class="fa fa-trash"></i>
+										</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<!-- Pagination -->
+						<div class="d-flex justify-content-center mt-3">
+							<ul class="pagination">
+								<li class="page-item"
+									th:classappend="${!coursePage.hasPrevious()} ? 'disabled'">
+									<a class="page-link"
+									th:href="@{/admin/course(page=${coursePage.number - 1}, size=${coursePage.size})}">«</a>
+								</li>
+								<li class="page-item"
+									th:each="i : ${#numbers.sequence(0, coursePage.totalPages - 1)}"
+									th:classappend="${i == coursePage.number} ? 'active'"><a
+									class="page-link"
+									th:href="@{/admin/course(page=${i}, size=${coursePage.size})}"
+									th:text="${i + 1}"></a></li>
+								<li class="page-item"
+									th:classappend="${!coursePage.hasNext()} ? 'disabled'"><a
+									class="page-link"
+									th:href="@{/admin/course(page=${coursePage.number + 1}, size=${coursePage.size})}">»</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div th:replace="admin/fragment/footer :: footer"></div>
+		</div>
+	</div>
+
+	<!-- Modal thêm/sửa Course -->
+	<div class="modal fade" id="courseModal" tabindex="-1"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalTitle">Thêm học phần mới</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<form id="courseForm">
+						<input type="hidden" id="courseId">
+						<div class="mb-2">
+							<label>Mã học phần:</label> <input type="text" id="courseCode"
+								class="form-control" required>
+						</div>
+						<div class="mb-2">
+							<label>Tên học phần:</label> <input type="text" id="courseName"
+								class="form-control" required>
+						</div>
+						<div class="mb-2">
+							<label>Tín chỉ:</label> <input type="number" id="credits"
+								class="form-control" min="1" required>
+						</div>
+						<div class="mb-2">
+							<label>Khoa:</label> <select id="facultyId" class="form-select">
+								<option value="">--Chọn Khoa--</option>
+								<option th:each="f : ${faculties}" th:value="${f.facultyId}"
+									th:text="${f.facultyName}"></option>
+							</select>
+						</div>
+						<div class="mb-2">
+							<label>Ngành:</label> <select id="majorId" class="form-select">
+								<option value="">--Chọn Ngành--</option>
+								<option th:each="m : ${majors}" th:value="${m.majorId}"
+									th:text="${m.majorName}"></option>
+							</select>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">Đóng</button>
+					<button type="button" class="btn btn-success" id="btnSaveModal">Lưu</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Core JS -->
+	<script th:src="@{/assets/js/core/jquery-3.7.1.min.js}"></script>
+	<script th:src="@{/assets/js/core/popper.min.js}"></script>
+	<script th:src="@{/assets/js/core/bootstrap.min.js}"></script>
+
+	<!-- Plugins -->
+	<script
+		th:src="@{/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart.js/chart.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart-circle/circles.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/datatables/datatables.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/jsvectormap.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/world.js}"></script>
+	<script th:src="@{/assets/js/plugin/gmaps/gmaps.js}"></script>
+	<script th:src="@{/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
+	<script th:src="@{/assets/js/kaiadmin.min.js}"></script><!-- JS quản lý Course (giống Major, dùng modal + fetch + csrf nếu cần) -->
+
+
+<script th:inline="javascript">
+/* ================== Toggle Edit Columns ================== */
+const btnEditToggleCourse = document.getElementById('btnEditToggleCourse');
+const btnSaveChangesCourse = document.getElementById('btnSaveChangesCourse');
+const btnCancelEditCourse = document.getElementById('btnCancelEditCourse');
+const btnAddNewCourse = document.getElementById('btnAddNewCourse');
+const editColumnsCourse = document.querySelectorAll('.edit-column');
+
+btnEditToggleCourse.addEventListener('click', () => {
+    editColumnsCourse.forEach(col => col.classList.remove('d-none'));
+    btnAddNewCourse.classList.remove('d-none');
+    btnEditToggleCourse.classList.add('d-none');
+    btnSaveChangesCourse.classList.remove('d-none');
+    btnCancelEditCourse.classList.remove('d-none');
+});
+
+btnCancelEditCourse.addEventListener('click', () => {
+    editColumnsCourse.forEach(col => col.classList.add('d-none'));
+    btnAddNewCourse.classList.add('d-none');
+    btnEditToggleCourse.classList.remove('d-none');
+    btnSaveChangesCourse.classList.add('d-none');
+    btnCancelEditCourse.classList.add('d-none');
+});
+
+btnSaveChangesCourse.addEventListener('click', () => {
+    alert('Lưu thay đổi thành công!');
+    editColumnsCourse.forEach(col => col.classList.add('d-none'));
+    btnAddNewCourse.classList.add('d-none');
+    btnEditToggleCourse.classList.remove('d-none');
+    btnSaveChangesCourse.classList.add('d-none');
+    btnCancelEditCourse.classList.add('d-none');
+});
+
+/* ================== Thêm mới Course ================== */
+btnAddNewCourse.addEventListener('click', () => {
+    document.getElementById('modalTitle').innerText = "Thêm Học phần mới";
+    document.getElementById('btnSaveModal').setAttribute('onclick', 'saveNewCourse()');
+
+    // Reset form
+    document.getElementById('courseId').value = '';
+    document.getElementById('courseCode').value = '';
+    document.getElementById('courseName').value = '';
+    document.getElementById('credits').value = '';
+    document.getElementById('facultyId').value = '';
+    document.getElementById('majorId').value = '';
+
+    new bootstrap.Modal(document.getElementById('courseModal')).show();
+});
+
+/* ================== Lưu Course mới ================== */
+function saveNewCourse() {
+    const facultyVal = document.getElementById('facultyId').value;
+    const majorVal = document.getElementById('majorId').value;
+
+    const course = {
+    	    courseCode: document.getElementById('courseCode').value.trim(),
+    	    courseName: document.getElementById('courseName').value.trim(),
+    	    credits: parseInt(document.getElementById('credits').value) || 0,
+    	    facultyId: parseInt(document.getElementById('facultyId').value),
+    	    majorId: parseInt(document.getElementById('majorId').value)
+    	};
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    fetch('/api/courses', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken
+        },
+        body: JSON.stringify(course)
+    })
+    .then(res => {
+        if(res.ok){
+            alert('Thêm học phần thành công!');
+            location.reload();
+        } else {
+            res.text().then(txt => alert('Thêm thất bại: ' + txt));
+        }
+    })
+    .catch(err => console.error(err));
+}
+
+/* ================== Sửa Course ================== */
+document.addEventListener('click', async function(e) {
+    const btn = e.target.closest('.btn-edit');
+    if(!btn) return;
+
+    const id = btn.getAttribute('data-id');
+    try {
+        const res = await fetch(`/api/courses/${id}`);
+        if(!res.ok) throw new Error('Không lấy được dữ liệu!');
+        const data = await res.json();
+
+        document.getElementById('courseId').value = data.id;
+        document.getElementById('courseCode').value = data.courseCode;
+        document.getElementById('courseName').value = data.courseName;
+        document.getElementById('credits').value = data.credits;
+        document.getElementById('facultyId').value = data.faculty ? data.faculty.facultyId : '';
+        document.getElementById('majorId').value = data.major ? data.major.majorId : '';
+
+        document.getElementById('modalTitle').innerText = "Chỉnh sửa Học phần";
+        document.getElementById('btnSaveModal').setAttribute('onclick', `updateCourse(${id})`);
+
+        new bootstrap.Modal(document.getElementById('courseModal')).show();
+    } catch(err) {
+        console.error(err);
+        alert("Lỗi khi tải dữ liệu!");
+    }
+});
+
+/* ================== Cập nhật Course ================== */
+function updateCourse(id) {
+    const course = {
+        courseCode: document.getElementById('courseCode').value,
+        courseName: document.getElementById('courseName').value,
+        credits: parseInt(document.getElementById('credits').value),
+        facultyId: parseInt(document.getElementById('facultyId').value),
+        majorId: parseInt(document.getElementById('majorId').value)
+    };
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    fetch(`/api/courses/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            [csrfHeader]: csrfToken
+        },
+        body: JSON.stringify(course)
+    })
+    .then(res => {
+        if(res.ok){
+            alert('Cập nhật thành công!');
+            location.reload();
+        } else {
+            res.text().then(txt => alert('Cập nhật thất bại: ' + txt));
+        }
+    })
+    .catch(err => console.error(err));
+}
+
+/* ================== Xóa Course ================== */
+document.addEventListener('click', function(e) {
+    const btnDelete = e.target.closest('.btn-delete');
+    if(!btnDelete) return;
+
+    const id = btnDelete.getAttribute('data-id');
+    if(!confirm('Bạn có chắc chắn muốn xóa học phần này?')) return;
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    fetch(`/api/courses/${id}`, {
+        method: 'DELETE',
+        headers: { [csrfHeader]: csrfToken }
+    })
+    .then(res => {
+        if(res.ok){
+            alert('Xóa thành công!');
+            location.reload();
+        } else {
+            res.text().then(txt => alert('Xóa thất bại: ' + txt));
+        }
+    })
+    .catch(err => console.error(err));
+});
+</script>
+
+</body>
+</html>

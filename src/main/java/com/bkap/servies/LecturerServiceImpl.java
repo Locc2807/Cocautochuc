@@ -59,8 +59,12 @@ public class LecturerServiceImpl implements LecturerServices{
 
 	@Override
 	public Lecturer save(Lecturer lecturer) {
-		// TODO Auto-generated method stub
-		return lecturerRepository.save(lecturer);
+		Lecturer saved = lecturerRepository.save(lecturer);
+	    if (saved.getLecturerCode() == null || saved.getLecturerCode().isEmpty()) {
+	        saved.setLecturerCode("L" + String.format("%03d", saved.getLecturerId()));
+	        saved = lecturerRepository.save(saved);
+	    }
+	    return saved;
 	}
 
 	@Override
@@ -73,6 +77,23 @@ public class LecturerServiceImpl implements LecturerServices{
 	public Optional<Lecturer> findById(Long id) {
 		// TODO Auto-generated method stub
 		return lecturerRepository.findById(id);
+	}
+
+	@Override
+	public Page<Lecturer> findByPosition(String position, Pageable pageable) {
+		if (position == null || position.isEmpty()) {
+	        return lecturerRepository.findAll(pageable); // nếu không có lọc, trả tất cả
+	    }
+	    return lecturerRepository.findByPositionContainingIgnoreCase(position, pageable);
+	}
+
+	@Override
+	public List<String> getAllPositions() {
+		 return lecturerRepository.findAll()
+		            .stream()
+		            .map(Lecturer::getPosition)
+		            .distinct()
+		            .toList();
 	}
 
 

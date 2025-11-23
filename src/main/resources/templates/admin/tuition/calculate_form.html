@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="https://www.thymeleaf.org/extras/spring-security6">
+<head th:replace="admin/fragment/head :: head"></head>
+
+<body>
+	<div class="wrapper">
+
+		<!-- Sidebar -->
+		<div th:replace="admin/fragment/aside :: aside"></div>
+
+		<!-- Main panel -->
+		<div class="main-panel">
+
+			<!-- Header -->
+			<div th:replace="admin/fragment/header :: header"></div>
+
+			<div class="container">
+				<div class="page-inner">
+
+					<div class="page-header">
+						<h4 class="page-title">💻 Tính học phí tự động</h4>
+					</div>
+
+					<!-- FORM CHỌN SINH VIÊN VÀ HỌC KỲ -->
+					<div class="card p-3 mb-4">
+						<form th:action="@{/admin/tuition/calculate}" method="get"
+							class="row g-3">
+
+							<div class="col-md-6">
+								<label for="studentId" class="form-label">Chọn sinh viên</label>
+								<select name="studentId" id="studentId" class="form-select"
+									required>
+									<option value="" disabled selected>-- Chọn sinh viên
+										--</option>
+									<option th:each="s : ${students}" th:value="${s.id}"
+										th:text="${s.fullName}"></option>
+								</select>
+							</div>
+
+							<div class="col-md-4">
+								<label for="semester" class="form-label">Học kỳ</label> <input
+									type="text" name="semester" id="semester" class="form-control"
+									placeholder="20241" required>
+							</div>
+
+							<div class="col-md-2 d-flex align-items-end">
+								<button type="submit" class="btn btn-primary w-100">Tính
+									học phí</button>
+							</div>
+
+						</form>
+					</div>
+
+					<!-- KẾT QUẢ HỌC PHÍ -->
+					<div th:if="${tuitionAmount != null}" class="card p-3">
+						<h5>Kết quả tính học phí</h5>
+						<p>
+							<strong>Sinh viên:</strong> <span th:text="${studentName}"></span>
+						</p>
+						<p>
+							<strong>Học kỳ:</strong> <span th:text="${semester}"></span>
+						</p>
+						<h4>
+							💰 Học phí: <span
+								th:text="${#numbers.formatDecimal(tuitionAmount, 0, 'COMMA', 2, 'POINT')}"></span>
+							VNĐ
+						</h4>
+						<a th:href="@{/admin/tuition/calculate_form}"
+							class="btn btn-secondary mt-3">Tính lại</a>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<div th:replace="admin/fragment/footer :: footer"></div>
+
+		</div>
+	</div>
+
+	<!-- Core JS và Plugins -->
+	<script th:src="@{/assets/js/core/jquery-3.7.1.min.js}"></script>
+	<script th:src="@{/assets/js/core/popper.min.js}"></script>
+	<script th:src="@{/assets/js/core/bootstrap.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart.js/chart.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart-circle/circles.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/datatables/datatables.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/jsvectormap.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/world.js}"></script>
+	<script th:src="@{/assets/js/plugin/gmaps/gmaps.js}"></script>
+	<script th:src="@{/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
+	<script th:src="@{/assets/js/kaiadmin.min.js}"></script>
+
+</body>
+</html>

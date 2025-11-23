@@ -30,34 +30,24 @@ public class LecturerController {
 	
 	@GetMapping({"/lecturer", "/lecturer/index"})
 	public String listLecturer(Model model,
-			@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
-            @RequestParam(required = false) String keyword,
-	        @RequestParam(required = false) Long lecturerId) {
-		
-		Pageable pageable = PageRequest.of(page, size);
-		Page<Lecturer> lecturerPage;
-		
-		if (lecturerId != null) {
-	        // Lọc theo ID ngành cụ thể
-			lecturerPage = lecturerServices.findByIdPaged(lecturerId, pageable);
-	    } else if (keyword != null && !keyword.isEmpty()) {
-	        // Lọc theo tên
-	    	lecturerPage = lecturerServices.findByName(keyword, pageable);
-	    } else {
-	        // Hiển thị tất cả
-	    	lecturerPage = lecturerServices.findAll(pageable);
-	    }
-		
-		List<Lecturer> lecturers = lecturerServices.findAllNoPaging();
-		 List<School> schools = schoolServices.getAll();
-		 		
-	    model.addAttribute("lecturerPage", lecturerPage);
-	    model.addAttribute("lecturers", lecturers);
-	    model.addAttribute("schools", schools);
-		model.addAttribute("keyword", keyword);
-	    model.addAttribute("lecturerId", lecturerId);
+	        @RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "5") int size,
+	        @RequestParam(required = false) String position) {
 
-	    return "admin/lecturer/index"; 
+	    Pageable pageable = PageRequest.of(page, size);
+	    Page<Lecturer> lecturerPage;
+
+	    if (position != null && !position.isEmpty()) {
+	        lecturerPage = lecturerServices.findByPosition(position, pageable);
+	    } else {
+	        lecturerPage = lecturerServices.findAll(pageable);
+	    }
+
+	    List<String> positions = lecturerServices.getAllPositions();
+	    model.addAttribute("lecturerPage", lecturerPage);
+	    model.addAttribute("positions", positions);
+	    model.addAttribute("keyword", position); // để giữ giá trị dropdown
+	    return "admin/lecturer/index";
 	}
+
 }

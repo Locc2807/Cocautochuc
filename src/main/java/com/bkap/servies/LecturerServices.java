@@ -18,6 +18,9 @@ public interface LecturerServices {
 	Page<Lecturer> findByIdPaged(Long id, Pageable pageable);
     List<Lecturer> findAllNoPaging();
     
+    Page<Lecturer> findByPosition(String position, Pageable pageable);
+    List<String> getAllPositions();
+    
     Lecturer save(Lecturer lecturer);
     void delete(Long id);
     Optional<Lecturer> findById(Long id);

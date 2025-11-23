@@ -93,14 +93,15 @@
 								<td th:text="${f.trainingCoeff}"></td>
 								<td th:text="${f.subjectCoeff}"></td>
 								<td th:text="${f.extraFee}"></td>
-								<td><span th:if="${f.isActive}" class="badge bg-success">Đang
-										dùng</span> <span th:if="${!f.isActive}" class="badge bg-secondary">Không
+								<td><span th:if="${f.isActive == '1'}"
+									class="badge bg-success">Đang dùng</span> <span
+									th:if="${f.isActive != '1'}" class="badge bg-secondary">Không
 										dùng</span></td>
 								<td><a th:href="@{'/admin/tuition/delete/' + ${f.id}}"
 									class="btn btn-danger btn-sm"
 									onclick="return confirm('Xóa công thức này?')">🗑 Xoá</a> <a
 									th:href="@{'/admin/tuition/activate/' + ${f.id}}"
-									class="btn btn-primary btn-sm">✔ Dùng</a></td>
+									class="btn btn-primary btn-sm">Tắt/Bật</a></td>
 							</tr>
 						</tbody>
 					</table>

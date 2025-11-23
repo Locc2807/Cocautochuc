@@ -29,33 +29,34 @@ public class MajorController {
 	
 	@GetMapping({"/major", "/major/index"})
 	public String listMajor(Model model,
-			@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
-            @RequestParam(required = false) String keyword,
-	        @RequestParam(required = false) Long majorId) {
-		
-		Pageable pageable = PageRequest.of(page, size);
-		Page<Major> majorPage;
-		
-		if (majorId != null) {
-	        // Lọc theo ID ngành cụ thể
-			majorPage = majorServices.findByIdPaged(majorId, pageable);
+	        @RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "5") int size,
+	        @RequestParam(required = false) String keyword,
+	        @RequestParam(required = false) Long facultyId) {  // đổi thành facultyId
+
+	    Pageable pageable = PageRequest.of(page, size);
+	    Page<Major> majorPage;
+
+	    if (facultyId != null) {
+	        // Lọc theo Khoa
+	        majorPage = majorServices.findByFacultyIdPaged(facultyId, pageable);
 	    } else if (keyword != null && !keyword.isEmpty()) {
-	        // Lọc theo tên
-	    	majorPage = majorServices.findByName(keyword, pageable);
+	        // Tìm theo tên ngành
+	        majorPage = majorServices.findByName(keyword, pageable);
 	    } else {
 	        // Hiển thị tất cả
-	    	majorPage = majorServices.findAll(pageable);
+	        majorPage = majorServices.findAll(pageable);
 	    }
-		
-		 List<Major> majors = majorServices.findAllNoPaging();
-		 List<Faculty> faculties = facultyServices.getAll();
-		
+
+	    List<Major> majors = majorServices.findAllNoPaging();
+	    List<Faculty> faculties = facultyServices.getAll();
+
 	    model.addAttribute("majorPage", majorPage);
-		model.addAttribute("majors", majors);
+	    model.addAttribute("majors", majors);
 	    model.addAttribute("faculties", faculties);
-		model.addAttribute("keyword", keyword);
-	    model.addAttribute("majorId", majorId);
+	    model.addAttribute("keyword", keyword);
+	    model.addAttribute("facultyId", facultyId); // đổi tên để map với select trong HTML
 	    return "admin/major/index"; 
 	}
+
 }

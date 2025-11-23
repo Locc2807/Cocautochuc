@@ -40,15 +40,8 @@ public class TuitionFormulaController {
         formulaServices.delete(id);
         return "redirect:/admin/tuition"; // ✅ đúng chuẩn
     }
-    
-    @GetMapping("/admin/tuition/create-bill")
-    public String createBillPage(Model model) {
-        // model.addAttribute("students", studentService.findAll());
-        // model.addAttribute("billForm", new TuitionBill());
-        return "admin/tuition/create-bill"; // file HTML bạn sẽ tạo sau
-    }
 
-    @GetMapping("/admin/tuition/report")
+    @GetMapping("/report")
     public String reportPage(Model model) {
         // model.addAttribute("reports", reportService.getTuitionReport());
         return "admin/tuition/report"; // file HTML để hiển thị thống kê

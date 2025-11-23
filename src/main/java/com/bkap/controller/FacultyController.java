@@ -29,33 +29,34 @@ public class FacultyController {
 	
 	@GetMapping({"/faculty", "/faculty/index"})
 	public String listFaculty(Model model,
-			@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
-            @RequestParam(required = false) String keyword,
-	        @RequestParam(required = false) Long facultylId) {
-		
-		Pageable pageable = PageRequest.of(page, size);
-		Page<Faculty> facultyPage;
-		
-		if (facultylId != null) {
-		        // Lọc theo ID khoa cụ thể
-			 facultyPage = facultyServices.findByIdPaged(facultylId, pageable);
-		    } else if (keyword != null && !keyword.isEmpty()) {
-		        // Lọc theo tên
-		    	facultyPage = facultyServices.findByName(keyword, pageable);
-		    } else {
-		        // Hiển thị tất cả
-		    	facultyPage = facultyServices.findAll(pageable);
-		    }
-		
-		 List<Faculty> faculties = facultyServices.findAllNoPaging();
-		 List<School> schools = schoolServices.getAll();
-		 
-		model.addAttribute("facultyPage", facultyPage);
-		model.addAttribute("faculties", faculties);
-		model.addAttribute("schools", schools);
-		model.addAttribute("keyword", keyword);
-	    model.addAttribute("facultylId", facultylId);
-	    return "admin/faculty/index"; 
+	        @RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "5") int size,
+	        @RequestParam(required = false) String keyword,
+	        @RequestParam(required = false) Long schoolId) {
+
+	    Pageable pageable = PageRequest.of(page, size);
+	    Page<Faculty> facultyPage;
+
+	    if (schoolId != null) {
+	        // Lọc theo trường
+	        facultyPage = facultyServices.findBySchoolIdPaged(schoolId, pageable);
+	    } else if (keyword != null && !keyword.isEmpty()) {
+	        // Lọc theo tên khoa
+	        facultyPage = facultyServices.findByName(keyword, pageable);
+	    } else {
+	        // Hiển thị tất cả
+	        facultyPage = facultyServices.findAll(pageable);
+	    }
+
+	    List<Faculty> faculties = facultyServices.findAllNoPaging();
+	    List<School> schools = schoolServices.getAll();
+
+	    model.addAttribute("facultyPage", facultyPage);
+	    model.addAttribute("faculties", faculties);
+	    model.addAttribute("schools", schools);
+	    model.addAttribute("keyword", keyword);
+	    model.addAttribute("schoolId", schoolId); // dùng schoolId để binding dropdown
+	    return "admin/faculty/index";
 	}
+
 }

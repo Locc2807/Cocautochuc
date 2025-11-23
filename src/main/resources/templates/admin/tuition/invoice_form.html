@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/fragment/head :: head"></head>
+
+<body>
+	<div class="wrapper">
+
+		<!-- Sidebar -->
+		<div th:replace="admin/fragment/aside :: aside"></div>
+
+		<!-- Main panel -->
+		<div class="main-panel">
+
+			<!-- Header -->
+			<div th:replace="admin/fragment/header :: header"></div>
+
+			<div class="container">
+				<div class="page-inner">
+
+					<div class="page-header">
+						<h4 class="page-title">🧾 Sinh hóa đơn học phí</h4>
+					</div>
+
+					<!-- FORM CHỌN SINH VIÊN VÀ HỌC KỲ -->
+					<div class="card p-3 mb-4">
+						<form th:action="@{/admin/tuition/invoice_generate}" method="post"
+							class="row g-3">
+
+							<div class="col-md-6">
+								<label for="studentId" class="form-label">Chọn sinh viên</label>
+								<select name="studentId" id="studentId" class="form-select"
+									required>
+									<option value="" disabled selected>-- Chọn sinh viên
+										--</option>
+									<option th:each="s : ${students}" th:value="${s.id}"
+										th:text="${s.fullName}"></option>
+								</select>
+							</div>
+
+							<div class="col-md-4">
+								<label for="semester" class="form-label">Học kỳ</label> <input
+									type="text" name="semester" id="semester" class="form-control"
+									placeholder="20241" required>
+							</div>
+
+							<div class="col-md-2 d-flex align-items-end">
+								<button type="submit" class="btn btn-primary w-100">Sinh
+									hóa đơn</button>
+							</div>
+
+						</form>
+					</div>
+
+					<!-- KẾT QUẢ HÓA ĐƠN -->
+					<div th:if="${invoice != null}" class="card p-3">
+						<h5>Kết quả hóa đơn</h5>
+						<p>
+							<strong>Mã sinh viên:</strong> <span
+								th:text="${invoice.studentId}"></span>
+						</p>
+						<p>
+							<strong>Tên sinh viên:</strong> <span
+								th:text="${invoice.studentName}"></span>
+						</p>
+						<p>
+							<strong>Học kỳ:</strong> <span th:text="${invoice.semester}"></span>
+						</p>
+						<p>
+							<strong>Tổng học phí:</strong> <span
+								th:text="${#numbers.formatDecimal(invoice.totalAmount, 0, 'COMMA', 2, 'POINT')}"></span>
+							VNĐ
+						</p>
+						<p>
+							<strong>Ngày tạo:</strong> <span th:text="${invoice.createdAt}"></span>
+						</p>
+						<p>
+							<strong>Hạn thanh toán:</strong> <span
+								th:text="${invoice.dueDate}"></span>
+						</p>
+						<p>
+							<strong>Trạng thái:</strong> <span th:text="${invoice.status}"></span>
+						</p>
+						<a th:href="@{/admin/tuition/invoice_form}"
+							class="btn btn-secondary mt-3">Tạo hóa đơn khác</a>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- Footer -->
+			<div th:replace="admin/fragment/footer :: footer"></div>
+
+		</div>
+	</div>
+
+	<!-- Core JS và Plugins -->
+	<script th:src="@{/assets/js/core/jquery-3.7.1.min.js}"></script>
+	<script th:src="@{/assets/js/core/popper.min.js}"></script>
+	<script th:src="@{/assets/js/core/bootstrap.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart.js/chart.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart-circle/circles.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/datatables/datatables.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/jsvectormap.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/world.js}"></script>
+	<script th:src="@{/assets/js/plugin/gmaps/gmaps.js}"></script>
+	<script th:src="@{/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
+	<script th:src="@{/assets/js/kaiadmin.min.js}"></script>
+</body>
+</html>

@@ -16,6 +16,7 @@ public interface MajorServices {
 	Page<Major> findAll(Pageable pageable);
 	
 	Page<Major> findByIdPaged(Long id, Pageable pageable);
+	Page<Major> findByFacultyIdPaged(Long facultyId, Pageable pageable);
     List<Major> findAllNoPaging();
     
     Major save(Major major);
