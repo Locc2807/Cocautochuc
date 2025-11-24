@@ -8,7 +8,6 @@
 
 		<!-- Sidebar -->
 		<div th:replace="admin/fragment/aside :: aside"></div>
-		<!-- End Sidebar -->
 
 		<div class="main-panel">
 			<!-- Header -->
@@ -38,11 +37,11 @@
 						</div>
 					</form>
 
-					<!-- Nút chỉnh sửa / thêm mới / lưu / hủy -->
+					<!-- Nút thêm mới / chỉnh sửa -->
 					<div
 						class="mb-3 d-flex justify-content-end align-items-center gap-2">
 						<button type="button" id="btnAddNew"
-							class="btn btn-success d-none" style="margin-right: 600px;">
+							class="btn btn-success d-none">
 							<i class="fa fa-plus"></i> Thêm mới
 						</button>
 						<button type="button" id="btnEditToggle" class="btn btn-warning">
@@ -58,68 +57,62 @@
 						</button>
 					</div>
 
-					<div class="page-category">
-						<table class="table table-bordered table-striped">
-							<thead class="table-dark">
-								<tr>
-									<th>Mã giảng viên</th>
-									<th>Tên giảng viên</th>
-									<th>Trường</th>
-									<th>Chức vụ</th>
-									<th>Email</th>
-									<th>Số điện thoại</th>
-									<th class="edit-column d-none">Thao tác</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr th:each="lecturer : ${lecturerPage}">
-									<td th:text="${lecturer.lecturerCode}"></td>
-									<td th:text="${lecturer.lecturerName}"></td>
-									<td
-										th:text="${lecturer.school != null ? lecturer.school.name : 'N/A'}"></td>
-									<td th:text="${lecturer.position}"></td>
-									<td th:text="${lecturer.email}"></td>
-									<td th:text="${lecturer.phone}"></td>
-									<td class="edit-column d-none">
-										<button class="btn btn-sm btn-primary me-1 btn-edit"
-											title="Sửa" th:data-id="${lecturer.lecturerId}">
-											<i class="fa fa-edit"></i>
-										</button>
-										<button class="btn btn-sm btn-danger btn-delete" title="Xóa"
-											th:data-id="${lecturer.lecturerId}">
-											<i class="fa fa-trash"></i>
-										</button>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-
-						<div class="d-flex justify-content-center mt-3">
-							<ul class="pagination">
-								<!-- Nút Previous -->
-								<li class="page-item"
-									th:classappend="${!lecturerPage.hasPrevious()} ? 'disabled'">
-									<a class="page-link"
-									th:href="@{/admin/lecturer(page=${lecturerPage.number - 1}, size=${lecturerPage.size})}">«</a>
-								</li>
-
-								<!-- Các số trang -->
-								<li class="page-item"
-									th:each="i : ${#numbers.sequence(0, lecturerPage.totalPages - 1)}"
-									th:classappend="${i == lecturerPage.number} ? 'active'"><a
-									class="page-link"
-									th:href="@{/admin/lecturer(page=${i}, size=${lecturerPage.size})}"
-									th:text="${i + 1}"></a></li>
-
-								<!-- Nút Next -->
-								<li class="page-item"
-									th:classappend="${!lecturerPage.hasNext()} ? 'disabled'"><a
-									class="page-link"
-									th:href="@{/admin/lecturer(page=${lecturerPage.number + 1}, size=${lecturerPage.size})}">»</a>
-								</li>
-							</ul>
+					<!-- Danh sách giảng viên dạng card -->
+					<div class="row" th:each="lecturer : ${lecturerPage}">
+						<div class="row-md-4 mb-3">
+							<div class="card">
+								<div class="card-body">
+									<h5 class="card-title" th:text="${lecturer.lecturerName}"></h5>
+									<p class="card-text">
+										<strong>Mã giảng viên:</strong><span
+											th:text="${lecturer.lecturerCode}"></span><br> <strong>Trường:</strong>
+										<span th:text="${lecturer.school?.name ?: 'N/A'}"></span><br>
+										<strong>Chức vụ:</strong> <span th:text="${lecturer.position}"></span><br>
+										<strong>Ngày bắt đầu:</strong> <span
+											th:text="${#dates.format(lecturer.startDate, 'dd/MM/yyyy')}"></span><br>
+										<strong>Loại hợp đồng:</strong> <span
+											th:text="${lecturer.contractType != null ? lecturer.contractType : 'N/A'}"></span>
+										<br> <strong>Email:</strong> <span
+											th:text="${lecturer.email}"></span><br> <strong>Điện
+											thoại:</strong> <span th:text="${lecturer.phone}"></span>
+									</p>
+								</div>
+								<div class="card-footer edit-column d-none">
+									<button class="btn btn-sm btn-primary me-1 btn-edit"
+										th:data-id="${lecturer.lecturerId}" title="Sửa">
+										<i class="fa fa-edit"></i>
+									</button>
+									<button class="btn btn-sm btn-danger btn-delete"
+										th:data-id="${lecturer.lecturerId}" title="Xóa">
+										<i class="fa fa-trash"></i>
+									</button>
+								</div>
+							</div>
 						</div>
 					</div>
+
+					<!-- Pagination -->
+					<div class="d-flex justify-content-center mt-3">
+						<ul class="pagination">
+							<li class="page-item"
+								th:classappend="${!lecturerPage.hasPrevious()} ? 'disabled'">
+								<a class="page-link"
+								th:href="@{/admin/lecturer(page=${lecturerPage.number - 1}, size=${lecturerPage.size})}">«</a>
+							</li>
+							<li class="page-item"
+								th:each="i : ${#numbers.sequence(0, lecturerPage.totalPages - 1)}"
+								th:classappend="${i == lecturerPage.number} ? 'active'"><a
+								class="page-link"
+								th:href="@{/admin/lecturer(page=${i}, size=${lecturerPage.size})}"
+								th:text="${i + 1}"></a></li>
+							<li class="page-item"
+								th:classappend="${!lecturerPage.hasNext()} ? 'disabled'"><a
+								class="page-link"
+								th:href="@{/admin/lecturer(page=${lecturerPage.number + 1}, size=${lecturerPage.size})}">»</a>
+							</li>
+						</ul>
+					</div>
+
 				</div>
 			</div>
 
@@ -128,26 +121,67 @@
 		</div>
 	</div>
 
-	<!-- Core JS -->
-	<script th:src="@{/assets/js/core/jquery-3.7.1.min.js}"></script>
-	<script th:src="@{/assets/js/core/popper.min.js}"></script>
-	<script th:src="@{/assets/js/core/bootstrap.min.js}"></script>
-
-	<!-- Plugins -->
-	<script
-		th:src="@{/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
-	<script th:src="@{/assets/js/plugin/chart.js/chart.min.js}"></script>
-	<script
-		th:src="@{/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
-	<script th:src="@{/assets/js/plugin/chart-circle/circles.min.js}"></script>
-	<script th:src="@{/assets/js/plugin/datatables/datatables.min.js}"></script>
-	<script
-		th:src="@{/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
-	<script th:src="@{/assets/js/plugin/jsvectormap/jsvectormap.min.js}"></script>
-	<script th:src="@{/assets/js/plugin/jsvectormap/world.js}"></script>
-	<script th:src="@{/assets/js/plugin/gmaps/gmaps.js}"></script>
-	<script th:src="@{/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
-	<script th:src="@{/assets/js/kaiadmin.min.js}"></script>
+	<!-- Modal thêm/sửa giảng viên -->
+	<div class="modal fade" id="lecturerModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="lecturerModalTitle">Thêm Giảng
+						viên</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="mb-3">
+							<label>Tên</label> <input id="lecturerName" class="form-control">
+						</div>
+						<div class="mb-3">
+							<label>Mã giảng viên</label> <input id="lecturerCode"
+								class="form-control">
+						</div>
+						<div class="mb-3">
+							<label>Thuộc trường</label> <select id="lecturerSchoolId"
+								class="form-select">
+								<option disabled selected>-- Chọn trường --</option>
+								<option th:each="s : ${schools}" th:value="${s.id}"
+									th:text="${s.name}"></option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label>Chức vụ</label> <input id="lecturerPosition"
+								class="form-control">
+						</div>
+						<div class="mb-3">
+							<label>Ngày bắt đầu làm việc</label> <input
+								id="lecturerStartDate" type="date" class="form-control">
+						</div>
+						<div class="mb-3">
+							<label>Loại hợp đồng</label> <select id="lecturerContractType"
+								class="form-select">
+								<option value="">-- Chọn loại --</option>
+								<option>Không xác định thời hạn</option>
+								<option>Xác định thời hạn 12 tháng</option>
+								<option>Xác định thời hạn 24 tháng</option>
+							</select>
+						</div>
+						<div class="mb-3">
+							<label>Email</label> <input id="lecturerEmail"
+								class="form-control">
+						</div>
+						<div class="mb-3">
+							<label>Số điện thoại</label> <input id="lecturerPhone"
+								class="form-control">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+					<button id="btnSaveLecturerModal" class="btn btn-success"
+						onclick="saveNewLecturer()">Lưu</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<script>
 /* ============== Toggle chế độ chỉnh sửa ============== */
@@ -197,10 +231,13 @@ btnLecturerAddNew.addEventListener('click', () => {
 function saveNewLecturer() {
     const lecturer = {
         lecturerName: document.getElementById('lecturerName').value,
+        lecturerCode: document.getElementById('lecturerCode').value,
         schoolId: parseInt(document.getElementById('lecturerSchoolId').value),
         position: document.getElementById('lecturerPosition').value,
         email: document.getElementById('lecturerEmail').value,
         phone: document.getElementById('lecturerPhone').value,
+        startDate: document.getElementById('lecturerStartDate').value, // yyyy-MM-dd
+        contractType: document.getElementById('lecturerContractType').value || null
     };
 
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
@@ -237,6 +274,11 @@ document.addEventListener('click', async function(e) {
         document.getElementById('lecturerPosition').value = data.position;
         document.getElementById('lecturerEmail').value = data.email;
         document.getElementById('lecturerPhone').value = data.phone;
+        document.getElementById('lecturerStartDate').value =
+            data.startDate ? data.startDate.substring(0, 10) : '';
+
+        document.getElementById('lecturerContractType').value = data.contractType || '';
+
 
         document.getElementById('lecturerModalTitle').innerText = "Chỉnh sửa Giảng viên";
         document.getElementById('btnSaveLecturerModal').setAttribute('onclick', `updateLecturer(${id})`);
@@ -256,6 +298,8 @@ function updateLecturer(id) {
         position: document.getElementById('lecturerPosition').value,
         email: document.getElementById('lecturerEmail').value,
         phone: document.getElementById('lecturerPhone').value,
+        startDate: document.getElementById('lecturerStartDate').value,
+        contractType: document.getElementById('lecturerContractType').value
     };
 
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
@@ -303,49 +347,26 @@ document.addEventListener('click', function(e) {
 });
 </script>
 
-	<div class="modal fade" id="lecturerModal" tabindex="-1">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="lecturerModalTitle">Thêm Giảng
-						viên</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-				</div>
-				<div class="modal-body">
-					<form>
-						<div class="mb-3">
-							<label>Tên</label> <input id="lecturerName" class="form-control">
-						</div>
-						<div class="mb-3">
-							<label>Thuộc trường</label> <select id="lecturerSchoolId"
-								class="form-select">
-								<option disabled selected>-- Chọn trường --</option>
-								<option th:each="s : ${schools}" th:value="${s.id}"
-									th:text="${s.name}"></option>
-							</select>
-						</div>
-						<div class="mb-3">
-							<label>Chức vụ</label> <input id="lecturerPosition"
-								class="form-control">
-						</div>
-						<div class="mb-3">
-							<label>Email</label> <input id="lecturerEmail"
-								class="form-control">
-						</div>
-						<div class="mb-3">
-							<label>Số điện thoại</label> <input id="lecturerPhone"
-								class="form-control">
-						</div>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-					<button id="btnSaveLecturerModal" class="btn btn-success"
-						onclick="saveNewLecturer()">Lưu</button>
-				</div>
-			</div>
-		</div>
-	</div>
+	<!-- Core JS -->
+	<script th:src="@{/assets/js/core/jquery-3.7.1.min.js}"></script>
+	<script th:src="@{/assets/js/core/popper.min.js}"></script>
+	<script th:src="@{/assets/js/core/bootstrap.min.js}"></script>
+
+	<!-- Plugins -->
+	<script
+		th:src="@{/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart.js/chart.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/chart-circle/circles.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/datatables/datatables.min.js}"></script>
+	<script
+		th:src="@{/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/jsvectormap.min.js}"></script>
+	<script th:src="@{/assets/js/plugin/jsvectormap/world.js}"></script>
+	<script th:src="@{/assets/js/plugin/gmaps/gmaps.js}"></script>
+	<script th:src="@{/assets/js/plugin/sweetalert/sweetalert.min.js}"></script>
+	<script th:src="@{/assets/js/kaiadmin.min.js}"></script>
 
 </body>
 </html>

@@ -21,4 +21,6 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long>{
 		                        @Param("batchId") Long batchId,
 		                        @Param("majorId") Long majorId,
 		                        Pageable pageable);
+	
+	Curriculum findByCurriculumCode(String curriculumCode);
 }

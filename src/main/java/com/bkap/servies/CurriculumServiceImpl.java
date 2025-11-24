@@ -61,4 +61,21 @@ public class CurriculumServiceImpl implements CurriculumServices{
 	    return curriculumRepository.search(keyword, batchId, majorId, pageable);
 	}
 
+	@Override
+    public List<Curriculum> getAllCurricula() {
+        return curriculumRepository.findAll();
+    }
+
+    @Override
+    public int getTotalCredits(String curriculumCode, String semester) {
+        // Lấy curriculum theo curriculumCode
+        Curriculum curriculum = curriculumRepository.findByCurriculumCode(curriculumCode);
+        if (curriculum == null) {
+            return 0;
+        }
+        // Vì entity không lưu tín chỉ theo semester,
+        // chúng ta trả tổng tín chỉ của curriculum
+        return curriculum.getTotalCredits() != null ? curriculum.getTotalCredits() : 0;
+    }
+
 }

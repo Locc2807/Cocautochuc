@@ -1,5 +1,6 @@
 package com.bkap.servies;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,5 +61,26 @@ public class TuitionFormulaServiceImpl implements TuitionFormulaServices {
         formula.setIsActive("1");
 
         formulaRepository.save(formula);
+    }
+
+    @Override
+    public List<TuitionFormula> getAllFormulas() {
+        // Lấy tất cả các công thức đang active
+        return formulaRepository.findAll().stream()
+                .filter(f -> "1".equals(f.getIsActive()))
+                .toList();
+    }
+
+    @Override
+    public BigDecimal getTuitionPerCreditBySemester(String semester) {
+        TuitionFormula formula = formulaRepository.findBySemesterAndIsActive(semester, "1");
+        if (formula == null) {
+            return BigDecimal.ZERO;
+        }
+        // Có thể nhân với trainingCoeff và subjectCoeff nếu muốn
+        return formula.getPricePerCredit()
+                      .multiply(formula.getTrainingCoeff())
+                      .multiply(formula.getSubjectCoeff())
+                      .add(formula.getExtraFee());
     }
 }

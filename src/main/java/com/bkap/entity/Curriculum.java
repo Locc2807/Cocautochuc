@@ -52,13 +52,12 @@ public class Curriculum {
     @Column(name = "description", length = 200)
     private String description; // Ghi chú
 
-    @OneToMany(mappedBy = "curriculum", cascade = CascadeType.ALL)
-    private List<KnowledgeBlock> blocks; // Danh sách khối kiến thức
 
     public Curriculum() {}
 
+
 	public Curriculum(Long id, Batch batch, Major major, String curriculumCode, Integer durationYears,
-			Integer totalSubjects, Integer totalCredits, String description, List<KnowledgeBlock> blocks) {
+			Integer totalSubjects, Integer totalCredits, String description) {
 		super();
 		this.id = id;
 		this.batch = batch;
@@ -68,79 +67,86 @@ public class Curriculum {
 		this.totalSubjects = totalSubjects;
 		this.totalCredits = totalCredits;
 		this.description = description;
-		this.blocks = blocks;
 	}
+
 
 	public Long getId() {
 		return id;
 	}
 
+
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 
 	public Batch getBatch() {
 		return batch;
 	}
 
+
 	public void setBatch(Batch batch) {
 		this.batch = batch;
 	}
+
 
 	public Major getMajor() {
 		return major;
 	}
 
+
 	public void setMajor(Major major) {
 		this.major = major;
 	}
+
 
 	public String getCurriculumCode() {
 		return curriculumCode;
 	}
 
+
 	public void setCurriculumCode(String curriculumCode) {
 		this.curriculumCode = curriculumCode;
 	}
+
 
 	public Integer getDurationYears() {
 		return durationYears;
 	}
 
+
 	public void setDurationYears(Integer durationYears) {
 		this.durationYears = durationYears;
 	}
+
 
 	public Integer getTotalSubjects() {
 		return totalSubjects;
 	}
 
+
 	public void setTotalSubjects(Integer totalSubjects) {
 		this.totalSubjects = totalSubjects;
 	}
+
 
 	public Integer getTotalCredits() {
 		return totalCredits;
 	}
 
+
 	public void setTotalCredits(Integer totalCredits) {
 		this.totalCredits = totalCredits;
 	}
+
 
 	public String getDescription() {
 		return description;
 	}
 
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
-	public List<KnowledgeBlock> getBlocks() {
-		return blocks;
-	}
-
-	public void setBlocks(List<KnowledgeBlock> blocks) {
-		this.blocks = blocks;
-	}
-    
 }

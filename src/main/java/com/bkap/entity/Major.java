@@ -43,64 +43,79 @@ public class Major {
 
     @Column(name = "major_code", nullable = false, unique = true, length = 50)
     private String majorCode;
+    
+    @Column(name = "min_credits", nullable = false)
+    private Integer minCredits;
 
     public Major() {
     }
 
-    public Major(Long majorId, String majorName, Faculty faculty, Date establishedDate, String description, String majorCode) {
-        this.majorId = majorId;
-        this.majorName = majorName;
-        this.faculty = faculty;
-        this.establishedDate = establishedDate;
-        this.description = description;
-        this.majorCode = majorCode;
-    }
+	public Major(Long majorId, String majorName, Faculty faculty, Date establishedDate, String description,
+			String majorCode, Integer minCredits) {
+		super();
+		this.majorId = majorId;
+		this.majorName = majorName;
+		this.faculty = faculty;
+		this.establishedDate = establishedDate;
+		this.description = description;
+		this.majorCode = majorCode;
+		this.minCredits = minCredits;
+	}
 
-    public Long getMajorId() {
-        return majorId;
-    }
+	public Long getMajorId() {
+		return majorId;
+	}
 
-    public void setMajorId(Long majorId) {
-        this.majorId = majorId;
-    }
+	public void setMajorId(Long majorId) {
+		this.majorId = majorId;
+	}
 
-    public String getMajorName() {
-        return majorName;
-    }
+	public String getMajorName() {
+		return majorName;
+	}
 
-    public void setMajorName(String majorName) {
-        this.majorName = majorName;
-    }
+	public void setMajorName(String majorName) {
+		this.majorName = majorName;
+	}
 
-    public Faculty getFaculty() {
-        return faculty;
-    }
+	public Faculty getFaculty() {
+		return faculty;
+	}
 
-    public void setFaculty(Faculty faculty) {
-        this.faculty = faculty;
-    }
+	public void setFaculty(Faculty faculty) {
+		this.faculty = faculty;
+	}
 
-    public Date getEstablishedDate() {
-        return establishedDate;
-    }
+	public Date getEstablishedDate() {
+		return establishedDate;
+	}
 
-    public void setEstablishedDate(Date establishedDate) {
-        this.establishedDate = establishedDate;
-    }
+	public void setEstablishedDate(Date establishedDate) {
+		this.establishedDate = establishedDate;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public String getMajorCode() {
-        return majorCode;
-    }
+	public String getMajorCode() {
+		return majorCode;
+	}
 
-    public void setMajorCode(String majorCode) {
-        this.majorCode = majorCode;
-    }
+	public void setMajorCode(String majorCode) {
+		this.majorCode = majorCode;
+	}
+
+	public Integer getMinCredits() {
+		return minCredits;
+	}
+
+	public void setMinCredits(Integer minCredits) {
+		this.minCredits = minCredits;
+	}
+
 }

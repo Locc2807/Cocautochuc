@@ -24,12 +24,11 @@ import jakarta.persistence.UniqueConstraint;
 @JsonIdentityInfo(
 	    generator = ObjectIdGenerators.PropertyGenerator.class, 
 	    property = "batchId"
-	)
+)
 public class Batch {
 	
 	@Id
-    @GeneratedValue
-    (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "batch_id")
     private Long batchId;
 
@@ -39,8 +38,11 @@ public class Batch {
     @Column(name = "academic_year", nullable = false, length = 20)
     private String academicYear;
 
-    @Column(name = "description", length = 200)
-    private String description;
+    @Column(name = "training_regulation", length = 200)
+    private String trainingRegulation;  // Quy chế đào tạo
+
+    @Column(name = "student_count")
+    private Integer studentCount = 0;   // Số lượng sinh viên
 
     @Column(name = "total_curriculums")
     private Integer totalCurriculums = 0;
@@ -50,17 +52,16 @@ public class Batch {
     @JsonManagedReference
     private List<Curriculum> curriculums;
 
-
     // Constructors
     public Batch() {}
 
-	public Batch(Long batchId, String batchCode, String academicYear, String description, Integer totalCurriculums,
-			List<Curriculum> curriculums) {
-		super();
+	public Batch(Long batchId, String batchCode, String academicYear, String trainingRegulation,
+			Integer studentCount, Integer totalCurriculums, List<Curriculum> curriculums) {
 		this.batchId = batchId;
 		this.batchCode = batchCode;
 		this.academicYear = academicYear;
-		this.description = description;
+		this.trainingRegulation = trainingRegulation;
+		this.studentCount = studentCount;
 		this.totalCurriculums = totalCurriculums;
 		this.curriculums = curriculums;
 	}
@@ -89,12 +90,20 @@ public class Batch {
 		this.academicYear = academicYear;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getTrainingRegulation() {
+		return trainingRegulation;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setTrainingRegulation(String trainingRegulation) {
+		this.trainingRegulation = trainingRegulation;
+	}
+
+	public Integer getStudentCount() {
+		return studentCount;
+	}
+
+	public void setStudentCount(Integer studentCount) {
+		this.studentCount = studentCount;
 	}
 
 	public Integer getTotalCurriculums() {
@@ -112,6 +121,4 @@ public class Batch {
 	public void setCurriculums(List<Curriculum> curriculums) {
 		this.curriculums = curriculums;
 	}
-    
-    
 }

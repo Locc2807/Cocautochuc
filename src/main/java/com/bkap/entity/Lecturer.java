@@ -1,5 +1,7 @@
 package com.bkap.entity;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -46,12 +48,19 @@ public class Lecturer {
 
     @Column(name = "phone", length = 20)
     private String phone;
+    
+    @Column(name = "start_date")
+    private Date startDate;
+
+    @Column(name = "contract_type", length = 100)
+    private String contractType;
+
 
     // Constructors
     public Lecturer() {}
 
 	public Lecturer(Long lecturerId, String lecturerCode, String lecturerName, School school, Faculty faculty,
-			String position, String email, String phone) {
+			String position, String email, String phone, Date startDate, String contractType) {
 		super();
 		this.lecturerId = lecturerId;
 		this.lecturerCode = lecturerCode;
@@ -61,6 +70,8 @@ public class Lecturer {
 		this.position = position;
 		this.email = email;
 		this.phone = phone;
+		this.startDate = startDate;
+		this.contractType = contractType;
 	}
 
 	public Long getLecturerId() {
@@ -125,6 +136,22 @@ public class Lecturer {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public String getContractType() {
+		return contractType;
+	}
+
+	public void setContractType(String contractType) {
+		this.contractType = contractType;
 	}
 
 	@PrePersist

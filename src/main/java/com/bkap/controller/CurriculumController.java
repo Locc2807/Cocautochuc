@@ -25,7 +25,7 @@ import com.bkap.servies.CurriculumServices;
 import com.bkap.servies.MajorServices;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/admin/training_program")
 public class CurriculumController {
 
     @Autowired

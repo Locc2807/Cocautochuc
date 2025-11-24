@@ -15,5 +15,7 @@ public interface TuitionFormulaRepository extends JpaRepository<TuitionFormula, 
     @Modifying
     @Query("UPDATE TuitionFormula t SET t.isActive = '0' WHERE t.semester = :semester AND t.isActive = '1'")
     void deactivateOldFormulas(String semester);
+    
+    
 }
 

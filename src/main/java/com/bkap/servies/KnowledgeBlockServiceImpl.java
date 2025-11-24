@@ -1,12 +1,14 @@
 package com.bkap.servies;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.bkap.entity.Curriculum;
 import com.bkap.entity.KnowledgeBlock;
 import com.bkap.repository.KnowledgeBlockRepository;
 
@@ -14,48 +16,36 @@ import com.bkap.repository.KnowledgeBlockRepository;
 public class KnowledgeBlockServiceImpl implements KnowledgeBlockServices{
 	
 	@Autowired
-	private KnowledgeBlockRepository knowledgeBlockRepository;
+    private KnowledgeBlockRepository blockRepository;
 
-	@Override
-	public List<KnowledgeBlock> getAll() {
-		// TODO Auto-generated method stub
-		return knowledgeBlockRepository.findAllWithCurriculumAndMajor();
-	}
+    @Override
+    public List<KnowledgeBlock> getAll() {
+        return blockRepository.findAll();
+    }
 
-	@Override
-	public Page<KnowledgeBlock> getAll(Pageable pageable) {
-		// TODO Auto-generated method stub
-		return knowledgeBlockRepository.findAll(pageable);
-	}
+    @Override
+    public Page<KnowledgeBlock> getAll(Pageable pageable) {
+        return blockRepository.findAll(pageable);
+    }
 
-	@Override
-	public KnowledgeBlock getById(Long id) {
-		// TODO Auto-generated method stub
-		return knowledgeBlockRepository.findById(id).orElse(null);
-	}
+    @Override
+    public Optional<KnowledgeBlock> findById(String blockCode) {
+        return blockRepository.findById(blockCode);
+    }
 
-	@Override
-	public KnowledgeBlock save(KnowledgeBlock block) {
-		// TODO Auto-generated method stub
-		return knowledgeBlockRepository.save(block);
-	}
+    @Override
+    public KnowledgeBlock save(KnowledgeBlock block) {
+        return blockRepository.save(block);
+    }
 
-	@Override
-	public void delete(Long id) {
-		// TODO Auto-generated method stub
-		knowledgeBlockRepository.deleteById(id);
-	}
+    @Override
+    public void deleteById(String blockCode) {
+        blockRepository.deleteById(blockCode);
+    }
 
-	@Override
-	public List<KnowledgeBlock> searchByName(String keyword) {
-		// TODO Auto-generated method stub
-		return knowledgeBlockRepository.findByNameContainingIgnoreCase(keyword);
-	}
-
-	@Override
-	public List<KnowledgeBlock> getByCurriculumId(Long curriculumId) {
-		// TODO Auto-generated method stub
-		return knowledgeBlockRepository.findByCurriculumId(curriculumId);
-	}
+    @Override
+    public List<KnowledgeBlock> searchByName(String keyword) {
+        return blockRepository.findByNameContainingIgnoreCase(keyword);
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.bkap.servies;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.bkap.entity.TuitionFormula;
@@ -12,4 +13,6 @@ public interface TuitionFormulaServices {
     TuitionFormula getActiveFormulaBySemester(String semester);
     void activate(Long id);
 
+    List<TuitionFormula> getAllFormulas();
+    BigDecimal getTuitionPerCreditBySemester(String semester);
 }

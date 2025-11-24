@@ -31,6 +31,8 @@ public class MajorApiController {
             Long facultyId = Long.valueOf(payload.get("facultyId").toString());
             String dateStr = (String) payload.get("establishedDate");
             String description = (String) payload.get("description");
+            Integer minCredits = payload.get("minCredits") != null ? 
+                                 Integer.valueOf(payload.get("minCredits").toString()) : 0;
 
             Major major = new Major();
             major.setMajorName(name);
@@ -41,6 +43,7 @@ public class MajorApiController {
             }
 
             major.setDescription(description);
+            major.setMinCredits(minCredits);
 
             // set Faculty
             Faculty faculty = facultyServices.findById(facultyId)
@@ -95,6 +98,11 @@ public class MajorApiController {
             Faculty faculty = facultyServices.findById(facultyId)
                     .orElseThrow(() -> new RuntimeException("Faculty not found"));
             major.setFaculty(faculty);
+
+            // Cập nhật minCredits
+            Integer minCredits = payload.get("minCredits") != null ? 
+                                 Integer.valueOf(payload.get("minCredits").toString()) : 0;
+            major.setMinCredits(minCredits);
 
             Major saved = majorServices.save(major);
             return ResponseEntity.ok(saved);

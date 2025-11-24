@@ -17,75 +17,67 @@ public class BatchServiceImpl implements BatchServices{
     private BatchRepository batchRepository;
 
 	@Override
-	public List<Batch> getAllBatches() {
-		// TODO Auto-generated method stub
-		return batchRepository.findAll();
-	}
+    public List<Batch> getAllBatches() {
+        return batchRepository.findAll();
+    }
 
-	@Override
-	public Batch getBatchById(Long id) {
-		// TODO Auto-generated method stub
-		return batchRepository.findById(id).orElse(null);
-	}
+    @Override
+    public Batch getBatchById(Long id) {
+        return batchRepository.findById(id).orElse(null);
+    }
 
-	@Override
-	public Batch createBatch(Batch batch) {
-		// TODO Auto-generated method stub
-		return batchRepository.save(batch);
-	}
+    @Override
+    public Batch createBatch(Batch batch) {
+        return batchRepository.save(batch);
+    }
 
-	@Override
-	public Batch updateBatch(Long id, Batch batch) {
-		Optional<Batch> existing = batchRepository.findById(id);
+    @Override
+    public Batch updateBatch(Long id, Batch batch) {
+        Optional<Batch> existing = batchRepository.findById(id);
         if (existing.isPresent()) {
             Batch b = existing.get();
             b.setBatchCode(batch.getBatchCode());
             b.setAcademicYear(batch.getAcademicYear());
-            b.setDescription(batch.getDescription());
+            b.setTrainingRegulation(batch.getTrainingRegulation());
+            b.setStudentCount(batch.getStudentCount());
             b.setTotalCurriculums(batch.getTotalCurriculums());
             return batchRepository.save(b);
         }
         return null;
-	}
+    }
 
-	@Override
-	public void deleteBatch(Long id) {
-		// TODO Auto-generated method stub
-		 try {
-		        batchRepository.deleteById(id);
-		    } catch (Exception e) {
-		        throw new RuntimeException("Cannot delete batch with id=" + id);
-		    }
-	}
+    @Override
+    public void deleteBatch(Long id) {
+        try {
+            batchRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot delete batch with id=" + id);
+        }
+    }
 
-	@Override
-	public Page<Batch> findAll(Pageable pageable) {
-		// TODO Auto-generated method stub
-		return batchRepository.findAll(pageable);
-	}
+    @Override
+    public Page<Batch> findAll(Pageable pageable) {
+        return batchRepository.findAll(pageable);
+    }
 
-	@Override
-	public Page<Batch> findByBatchCodePaged(String keyword, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return batchRepository.findByBatchCodeContainingIgnoreCase(keyword, pageable);
-	}
+    @Override
+    public Page<Batch> findByBatchCodePaged(String keyword, Pageable pageable) {
+        return batchRepository.findByBatchCodeContainingIgnoreCase(keyword, pageable);
+    }
 
-	@Override
-	public Page<Batch> findByBatchCodeAndAcademicYearPaged(String keyword, String academicYear, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return batchRepository.findByBatchCodeContainingIgnoreCaseAndAcademicYear(keyword, academicYear, pageable);
-	}
+    @Override
+    public Page<Batch> findByBatchCodeAndAcademicYearPaged(String keyword, String academicYear, Pageable pageable) {
+        return batchRepository.findByBatchCodeContainingIgnoreCaseAndAcademicYear(keyword, academicYear, pageable);
+    }
 
-	@Override
-	public Page<Batch> findByAcademicYearPaged(String academicYear, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return batchRepository.findByAcademicYear(academicYear, pageable);
-	}
+    @Override
+    public Page<Batch> findByAcademicYearPaged(String academicYear, Pageable pageable) {
+        return batchRepository.findByAcademicYear(academicYear, pageable);
+    }
 
-	@Override
-	public List<String> getDistinctAcademicYears() {
-		// TODO Auto-generated method stub
-		return batchRepository.findDistinctAcademicYears();
-	}
+    @Override
+    public List<String> getDistinctAcademicYears() {
+        return batchRepository.findDistinctAcademicYears();
+    }
 
 }

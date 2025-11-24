@@ -1,5 +1,8 @@
 package com.bkap.controller;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +43,18 @@ public class LecturerApiController {
             Lecturer lecturer = new Lecturer();
 
             lecturer.setLecturerName((String) payload.get("lecturerName"));
+            lecturer.setLecturerCode((String) payload.get("lecturerCode")); 
             lecturer.setEmail((String) payload.get("email"));
             lecturer.setPhone((String) payload.get("phone"));
             lecturer.setPosition((String) payload.get("position"));
+            lecturer.setContractType((String) payload.get("contractType"));
+            
+            if (payload.get("startDate") != null) {
+                String startDateStr = (String) payload.get("startDate"); // yyyy-MM-dd
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date startDate = sdf.parse(startDateStr);
+                lecturer.setStartDate(startDate);
+            }
 
             // School
             if (payload.get("schoolId") != null) {
@@ -95,9 +107,18 @@ public class LecturerApiController {
                     .orElseThrow(() -> new RuntimeException("Lecturer not found"));
 
             lecturer.setLecturerName((String) payload.get("lecturerName"));
+            lecturer.setLecturerCode((String) payload.get("lecturerCode")); 
             lecturer.setEmail((String) payload.get("email"));
             lecturer.setPhone((String) payload.get("phone"));
             lecturer.setPosition((String) payload.get("position"));
+            lecturer.setContractType((String) payload.get("contractType"));
+            
+            if (payload.get("startDate") != null) {
+                String startDateStr = (String) payload.get("startDate"); // yyyy-MM-dd
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date startDate = sdf.parse(startDateStr);
+                lecturer.setStartDate(startDate);
+            }
 
             // School
             if (payload.get("schoolId") != null) {

@@ -1,91 +1,85 @@
 package com.bkap.entity;
 
-import java.util.List;
+import org.hibernate.annotations.GenericGenerator;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "KNOWLEDGE_BLOCK")
 public class KnowledgeBlock {
-	
+
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "block_id")
-    private Long id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "BLOCK_CODE", length = 36)
+    private String blockCode;  // Mã khối kiến thức
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "curriculum_id", nullable = false)
-    private Curriculum curriculum; // liên kết với chương trình đào tạo
+    @Column(name = "NAME", nullable = false, length = 100)
+    private String name;       // Tên khối kiến thức
 
-    @Column(name = "name", nullable = false, length = 100)
-    private String name; // tên khối: Cơ sở, Cơ sở ngành, Chuyên ngành
+    @Column(name = "MIN_REQUIRED_CREDITS", nullable = false)
+    private Integer minRequiredCredits;  // Tổng số tín chỉ bắt buộc
 
-    @Column(name = "description", length = 200)
-    private String description;
+    @Column(name = "ELECTIVE_CREDITS")
+    private Integer electiveCredits;     // Số tín chỉ tự chọn
 
-    @OneToMany(mappedBy = "block", cascade = CascadeType.ALL)
-    private List<BlockCourse> courses; // danh sách học phần thuộc khối
+    @Column(name = "SUBJECT_COUNT", nullable = false)
+    private Integer subjectCount;        // Số môn học trong khối
 
+    // Constructors
     public KnowledgeBlock() {}
 
-	public KnowledgeBlock(Long id, Curriculum curriculum, String name, String description, List<BlockCourse> courses) {
-		super();
-		this.id = id;
-		this.curriculum = curriculum;
-		this.name = name;
-		this.description = description;
-		this.courses = courses;
-	}
+    public KnowledgeBlock(String blockCode, String name, Integer minRequiredCredits,
+                          Integer electiveCredits, Integer subjectCount) {
+        this.blockCode = blockCode;
+        this.name = name;
+        this.minRequiredCredits = minRequiredCredits;
+        this.electiveCredits = electiveCredits;
+        this.subjectCount = subjectCount;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    // Getters và Setters
+    public String getBlockCode() {
+        return blockCode;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setBlockCode(String blockCode) {
+        this.blockCode = blockCode;
+    }
 
-	public Curriculum getCurriculum() {
-		return curriculum;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setCurriculum(Curriculum curriculum) {
-		this.curriculum = curriculum;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public Integer getMinRequiredCredits() {
+        return minRequiredCredits;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setMinRequiredCredits(Integer minRequiredCredits) {
+        this.minRequiredCredits = minRequiredCredits;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public Integer getElectiveCredits() {
+        return electiveCredits;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setElectiveCredits(Integer electiveCredits) {
+        this.electiveCredits = electiveCredits;
+    }
 
-	public List<BlockCourse> getCourses() {
-		return courses;
-	}
+    public Integer getSubjectCount() {
+        return subjectCount;
+    }
 
-	public void setCourses(List<BlockCourse> courses) {
-		this.courses = courses;
-	}
-    
-    
+    public void setSubjectCount(Integer subjectCount) {
+        this.subjectCount = subjectCount;
+    }
 }

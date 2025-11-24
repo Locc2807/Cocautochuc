@@ -21,73 +21,45 @@ public class CourseApiController {
 
     @Autowired
     private CourseServices courseService;
-    
+
     @Autowired
     private FacultyRepository facultyRepository;
-    
+
     @Autowired
     private MajorRepository majorRepository;
 
-    // Lấy tất cả course
+    // ================================
+    // Lấy tất cả Course
+    // ================================
     @GetMapping
     public ResponseEntity<?> getAllCourses() {
-        return ResponseEntity.ok(courseService.getAll());
-    }
-
-    // Lấy course theo id
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getCourseById(@PathVariable Long id) {
-        Optional<Course> courseOpt = courseService.findById(id);
-        if (courseOpt.isPresent()) {
-            return ResponseEntity.ok(courseOpt.get());
-        } else {
-            return ResponseEntity.notFound().build();
+        try {
+            return ResponseEntity.ok(courseService.getAll());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Lỗi lấy danh sách Course: " + e.getMessage());
         }
     }
 
-    // Thêm mới course
+    // ================================
+    // Lấy Course theo ID
+    // ================================
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getCourseById(@PathVariable Long id) {
+        Optional<Course> courseOpt = courseService.findById(id);
+        return courseOpt.isPresent() ? ResponseEntity.ok(courseOpt.get()) : ResponseEntity.notFound().build();
+    }
+
+    // ================================
+    // Thêm mới Course
+    // ================================
     @PostMapping
     public ResponseEntity<?> createCourse(@RequestBody Map<String, Object> payload) {
         try {
             Course course = new Course();
             course.setCourseCode((String) payload.get("courseCode"));
             course.setCourseName((String) payload.get("courseName"));
-            course.setCredits(Integer.parseInt(payload.get("credits").toString()));
-
-         // Chuyển facultyId sang Faculty entity
-            Long facultyId = Long.parseLong(payload.get("facultyId").toString());
-            Faculty faculty = facultyRepository.findById(facultyId)
-                    .orElseThrow(() -> new RuntimeException("Faculty not found"));
-            course.setFaculty(faculty);
-
-            // Chuyển majorId sang Major entity (nếu có)
-            if (payload.get("majorId") != null) {
-                Long majorId = Long.parseLong(payload.get("majorId").toString());
-                Major major = majorRepository.findById(majorId)
-                        .orElseThrow(() -> new RuntimeException("Major not found"));
-                course.setMajor(major);
-            } else {
-                course.setMajor(null);
-            }
-
-            Course saved = courseService.save(course);
-            return ResponseEntity.ok(saved);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Lỗi lưu học phần: " + e.getMessage());
-        }
-    }
-
-
-    // Cập nhật course
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateCourse(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
-        try {
-            Course course = courseService.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Course not found"));
-
-            course.setCourseCode((String) payload.get("courseCode"));
-            course.setCourseName((String) payload.get("courseName"));
-            course.setCredits(Integer.parseInt(payload.get("credits").toString()));
+            course.setCredits(payload.get("credits") != null ?
+                              Integer.parseInt(payload.get("credits").toString()) : 0);
 
             // Faculty
             Long facultyId = Long.parseLong(payload.get("facultyId").toString());
@@ -108,18 +80,57 @@ public class CourseApiController {
             Course saved = courseService.save(course);
             return ResponseEntity.ok(saved);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Cập nhật thất bại: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Lỗi lưu Course: " + e.getMessage());
         }
     }
 
-    // Xóa course
+    // ================================
+    // Cập nhật Course
+    // ================================
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateCourse(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
+        try {
+            Course course = courseService.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Course not found"));
+
+            course.setCourseCode((String) payload.get("courseCode"));
+            course.setCourseName((String) payload.get("courseName"));
+            course.setCredits(payload.get("credits") != null ?
+                              Integer.parseInt(payload.get("credits").toString()) : 0);
+
+            // Faculty
+            Long facultyId = Long.parseLong(payload.get("facultyId").toString());
+            Faculty faculty = facultyRepository.findById(facultyId)
+                    .orElseThrow(() -> new RuntimeException("Faculty not found"));
+            course.setFaculty(faculty);
+
+            // Major (nếu có)
+            if (payload.get("majorId") != null) {
+                Long majorId = Long.parseLong(payload.get("majorId").toString());
+                Major major = majorRepository.findById(majorId)
+                        .orElseThrow(() -> new RuntimeException("Major not found"));
+                course.setMajor(major);
+            } else {
+                course.setMajor(null);
+            }
+
+            Course saved = courseService.save(course);
+            return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Cập nhật Course thất bại: " + e.getMessage());
+        }
+    }
+
+    // ================================
+    // Xóa Course
+    // ================================
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCourse(@PathVariable Long id) {
         try {
             courseService.delete(id);
             return ResponseEntity.ok("Xóa thành công!");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Không thể xóa học phần này!");
+            return ResponseEntity.badRequest().body("Không thể xóa Course: " + e.getMessage());
         }
     }
 }

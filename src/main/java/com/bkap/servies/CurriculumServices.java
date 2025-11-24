@@ -16,4 +16,7 @@ public interface CurriculumServices {
     
     Page<Curriculum> findAll(Pageable pageable);
     Page<Curriculum> searchCurriculum(String keyword, Long batchId, Long majorId, Pageable pageable);
+    
+    List<Curriculum> getAllCurricula();
+    int getTotalCredits(String curriculumCode, String semester);
 }

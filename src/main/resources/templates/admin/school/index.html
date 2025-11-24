@@ -28,6 +28,7 @@
 						</div>
 						<div class="col-md-3">
 							<select class="form-select" name="schoolId">
+								<option value="" selected>-- Chọn Trường --</option>
 								<option th:each="schoolItem : ${schools}"
 									th:value="${schoolItem.id}" th:text="${schoolItem.name}"
 									th:selected="${schoolItem.id == schoolId}"></option>

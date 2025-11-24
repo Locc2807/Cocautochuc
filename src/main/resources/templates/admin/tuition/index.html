@@ -73,7 +73,6 @@
 					<table class="table table-bordered mt-3">
 						<thead class="table-secondary">
 							<tr>
-								<th>#</th>
 								<th>Học kỳ</th>
 								<th>Đơn giá</th>
 								<th>Hệ đào tạo</th>
@@ -86,7 +85,6 @@
 						</thead>
 						<tbody>
 							<tr th:each="f : ${formulas}">
-								<td th:text="${f.id}"></td>
 								<td th:text="${f.semester}"></td>
 								<td th:text="${f.pricePerCredit}"></td>
 								<td th:text="${f.trainingSystem}"></td>

@@ -1,5 +1,6 @@
 package com.bkap.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.bkap.entity.Faculty;
 import com.bkap.entity.Lecturer;
 import com.bkap.entity.School;
-import com.bkap.servies.FacultyServices;
 import com.bkap.servies.LecturerServices;
 import com.bkap.servies.SchoolServices;
 
@@ -44,9 +43,18 @@ public class LecturerController {
 	    }
 
 	    List<String> positions = lecturerServices.getAllPositions();
+	    List<School> schools;
+	    try {
+	        schools = schoolServices.getAll();
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	        schools = Collections.emptyList();
+	    }
+	    
 	    model.addAttribute("lecturerPage", lecturerPage);
 	    model.addAttribute("positions", positions);
-	    model.addAttribute("keyword", position); // để giữ giá trị dropdown
+	    model.addAttribute("keyword", position);// để giữ giá trị dropdown
+	    model.addAttribute("schools", schools);
 	    return "admin/lecturer/index";
 	}
 
